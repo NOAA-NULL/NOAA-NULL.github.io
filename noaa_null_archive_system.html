@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NOAA-NULL Archive System</title>
+<style>
+body { margin:0; font-family:monospace; background:#05070a; color:#b7c7d6; }
+header { padding:20px; text-align:center; border-bottom:1px solid #1c2a3a; }
+.glitch { animation:flicker 2s infinite; }
+@keyframes flicker {0%{opacity:1;}50%{opacity:.6;}100%{opacity:1;}}
+.warning { background:#1b0b0b; color:#ff5c5c; padding:10px; text-align:center; }
+.panel { padding:15px; border:1px solid #1c2a3a; background:#070b10; margin:10px; }
+.hidden { display:none; }
+.codebox { background:#0b1118; padding:10px; border:1px solid #1c2a3a; white-space:pre-wrap; }
+table { width:100%; border-collapse:collapse; }
+th,td { border:1px solid #1c2a3a; padding:8px; text-align:center; cursor:pointer; }
+th:hover,td:hover { background:#0f1720; }
+button,input { background:#0f1720; color:#7ad1ff; border:1px solid #1c2a3a; padding:8px; cursor:pointer; }
+#notice { margin:10px; padding:10px; border:1px solid #1c2a3a; background:#081018; color:#7ad1ff; }
+.small { font-size:12px; opacity:.8 }
+</style>
+</head>
+<body>
+
+<!-- ACCESS_KEY (source only): EADRU-17B-OBSERVER -->
+
+<header>
+<h1 class="glitch" id="title">NOAA NULL ARCHIVE SYSTEM</h1>
+<p>Experimental Atmospheric Data Recovery Unit</p>
+<p><b>STATUS:</b> DEGRADED</p>
+</header>
+
+<div class="warning">WARNING: RADAR FEED CORRUPTION DETECTED — DO NOT TRUST CELL MAPPING</div>
+
+<div id="notice" class="hidden"></div>
+
+<!-- MAIN -->
+<div id="main">
+<div class="panel">
+<h2>LIVE CELL TRACKER</h2>
+<table>
+<tr><th>CELL ID</th><th>LOCATION</th><th>STATUS</th></tr>
+<tr onclick="showCell('17B')"><td>17B</td><td>UNKNOWN</td><td>MISSING</td></tr>
+<tr onclick="showCell('04X')"><td>04X</td><td>KANSAS CORRIDOR</td><td>STATIONARY</td></tr>
+<tr onclick="showCell('09Q')"><td>09Q</td><td>ATLANTIC VOID</td><td>OBSERVING</td></tr>
+<tr onclick="showCell('12Δ')"><td>12Δ</td><td>[REDACTED]</td><td>MOVING AGAINST WIND</td></tr>
+</table>
+<div id="secret" class="hidden codebox"></div>
+<div class="small">hint: the system reacts to input</div>
+</div>
+
+<div class="panel">
+<h2>ECHO LOG 17B — AUDIO FEED</h2>
+<button onclick="startAudio()">INITIALIZE SIGNAL</button>
+<audio id="audio" src="https://www.soundjay.com/misc/sounds/static-1.mp3"></audio>
+<div id="morse" class="codebox hidden">- .... . / . -.-- . ... / -.. --- / -. --- - / -- --- ...- . / - .... . -.--</div>
+</div>
+</div>
+
+<!-- VIEWS -->
+<div id="echoView" class="hidden panel">
+<h2>ECHO NODE 17B</h2>
+<div class="codebox">
+COORDINATE FRAGMENT:
+41.███ N
+-9█.██ W
+
+"IT DOES NOT MOVE UNLESS YOU LOOK AWAY"
+</div>
+<input id="coordInput" placeholder="enter full coordinates" />
+<button onclick="checkCoords()">SUBMIT</button>
+</div>
+
+<div id="observerView" class="hidden panel">
+<h2>OBSERVER NODE</h2>
+<div class="codebox">
+THE SYSTEM ADAPTS TO OBSERVATION
+INPUT SEQUENCE REQUIRED
+"IT LEARNS YOUR PATTERNS"
+</div>
+</div>
+
+<div id="adminView" class="hidden panel">
+<h2>ADMIN INTERFACE</h2>
+<input id="adminKey" placeholder="ACCESS KEY" />
+<button onclick="checkAdmin()">AUTHENTICATE</button>
+<div id="adminContent" class="codebox hidden"></div>
+</div>
+
+<script>
+// ---------- STATE ----------
+let sequence = [];
+
+// ---------- ROUTER (FAKE URL SYSTEM) ----------
+function navigate(path){
+ history.pushState({}, '', path);
+ renderRoute();
+}
+
+function renderRoute(){
+ const path = location.pathname.toLowerCase();
+
+ hideAll();
+
+ if(path.includes('/echo')) show('echoView');
+ else if(path.includes('/observer')) show('observerView');
+ else if(path.includes('/admin')) show('adminView');
+ else show('main');
+}
+
+window.addEventListener('popstate', renderRoute);
+
+// ---------- UI ----------
+function hideAll(){
+ ['main','echoView','observerView','adminView'].forEach(id=>{
+  document.getElementById(id).classList.add('hidden');
+ });
+}
+
+function show(view){
+ document.getElementById(view).classList.remove('hidden');
+}
+
+function showNotice(msg){
+ const n=document.getElementById('notice');
+ n.classList.remove('hidden');
+ n.innerText=msg;
+}
+
+// ---------- CONTENT ----------
+function showCell(id){
+ const box=document.getElementById('secret');
+ box.classList.remove('hidden');
+ if(id==="12Δ"){
+  const msg="THE EYE DOES NOT MOVE. IT REMEMBERS. /echo";
+  box.innerText="BASE64:\n"+btoa(msg);
+ } else box.innerText="DATA CORRUPTED";
+}
+
+function startAudio(){
+ const a=document.getElementById('audio');
+ try{a.currentTime=0;a.play();}catch{}
+ setTimeout(()=>document.getElementById('morse').classList.remove('hidden'),4000);
+}
+
+function checkCoords(){
+ const v=document.getElementById('coordInput').value;
+ if(v.includes('41') && v.includes('-9')){
+  navigate('/observer');
+  showNotice('VECTOR ACCEPTED');
+ }
+}
+
+function checkAdmin(){
+ const k=document.getElementById('adminKey').value;
+ if(k==="EADRU-17B-OBSERVER"){
+  const c=document.getElementById('adminContent');
+  c.classList.remove('hidden');
+  c.innerText=`CLASSIFIED — EADRU
+
+THE STORM IS NOT WEATHER.
+IT RESPONDS TO ATTENTION.
+
+IT STORES PATTERNS.
+IT REPEATS YOU.
+
+17B IS NOT MISSING.
+
+IT IS LOOKING BACK.
+
+"WHY DID YOU COME BACK?"`;
+ }
+}
+
+// ---------- INPUT SYSTEM ----------
+document.addEventListener('keydown',e=>{
+ const k=e.key.toLowerCase();
+ sequence.push(k);
+ if(sequence.length>10) sequence.shift();
+
+ if(sequence.join('').includes('echo')){
+  navigate('/echo');
+  showNotice('ECHO OPENED');
+ }
+
+ if(sequence.join('').includes('observe')){
+  navigate('/observer');
+  showNotice('OBSERVATION DETECTED');
+ }
+
+ if(sequence.join('').includes('admin')){
+  navigate('/admin');
+  showNotice('ADMIN ACCESS');
+ }
+
+ if(Math.random()<0.05) showNotice('INPUT LOGGED');
+});
+
+// ---------- PSYCHOLOGICAL ----------
+let visits = +localStorage.getItem('v')||0; visits++; localStorage.setItem('v',visits);
+if(visits>1) setTimeout(()=>showNotice('YOU CAME BACK'),1500);
+
+setInterval(()=>{
+ if(Math.random()<0.08){
+  document.body.style.filter='invert(1)';
+  setTimeout(()=>document.body.style.filter='none',80);
+ }
+ if(Math.random()<0.05){
+  document.getElementById('title').innerText='NOAA NULL ARCHIVE SYSTEM // WATCHING';
+ }
+},2500);
+
+setTimeout(()=>showNotice('WHY ARE YOU STILL HERE'),20000);
+
+renderRoute();
+</script>
+
+</body>
+</html>
