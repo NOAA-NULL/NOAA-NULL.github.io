@@ -1,219 +1,1645 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>NOAA-NULL Archive System</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOAA NULL ARCHIVE SYSTEM — ADRU Terminal v0.4.1</title>
+<!--
+  NOAA / NCEI / ADRU-TERMINAL
+  v0.4.1-UNSTABLE — NODE: ATL-VOID-03
+
+  ─────────────────────────────────────────
+  INTERNAL KEYS — NOT FOR DISTRIBUTION
+  ACCESS_KEY:     EADRU-17B-OBSERVER
+  SECTOR_12_KEY:  NULL-VOID-12D
+  ─────────────────────────────────────────
+
+  SESSION REGISTRY:
+    0x4F2A — current (you)
+    0x0019 — last known operator — STATUS: NULL
+    0x0018 — field officer KFSD  — STATUS: RESIGNED 2024-03-07
+
+  NOTE FROM 0x0019:
+    "the paths are not all documented.
+     some things you have to already know to find.
+     not all sequences are in the manual.
+     if you are reading this you are already inside."
+
+  if you found this: the system already knows.
+-->
 <style>
-body { margin:0; font-family:monospace; background:#05070a; color:#b7c7d6; }
-header { padding:20px; text-align:center; border-bottom:1px solid #1c2a3a; }
-.glitch { animation:flicker 2s infinite; }
-@keyframes flicker {0%{opacity:1;}50%{opacity:.6;}100%{opacity:1;}}
-.warning { background:#1b0b0b; color:#ff5c5c; padding:10px; text-align:center; }
-.panel { padding:15px; border:1px solid #1c2a3a; background:#070b10; margin:10px; }
-.hidden { display:none; }
-.codebox { background:#0b1118; padding:10px; border:1px solid #1c2a3a; white-space:pre-wrap; }
-table { width:100%; border-collapse:collapse; }
-th,td { border:1px solid #1c2a3a; padding:8px; text-align:center; cursor:pointer; }
-th:hover,td:hover { background:#0f1720; }
-button,input { background:#0f1720; color:#7ad1ff; border:1px solid #1c2a3a; padding:8px; cursor:pointer; }
-#notice { margin:10px; padding:10px; border:1px solid #1c2a3a; background:#081018; color:#7ad1ff; }
-.small { font-size:12px; opacity:.8 }
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap');
+
+:root {
+  --bg:        #050709;
+  --bg2:       #080c10;
+  --text:      #7ab3c4;
+  --text-dim:  #3d6070;
+  --text-muted:#1f3540;
+  --accent:    #4af0c4;
+  --warn:      #c44a4a;
+  --warn-dim:  #7a2222;
+  --border:    #132030;
+  --border2:   #0d1a25;
+  --row-hover: #0a1520;
+  --red-glow:  rgba(196,74,74,0.08);
+  --grn-glow:  rgba(74,240,196,0.04);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Share Tech Mono','Courier New',monospace;
+  font-size:13px;
+  line-height:1.6;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* scanlines */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.18) 2px,rgba(0,0,0,0.18) 4px);
+  pointer-events:none;
+  z-index:9999;
+}
+
+@keyframes flicker{0%,96%,100%{opacity:1}97%{opacity:.92}98%{opacity:1}99%{opacity:.94}}
+body{animation:flicker 11s infinite}
+
+.terminal{max-width:960px;margin:0 auto;padding:0 0 80px}
+
+/* ── topbar ── */
+.topbar{
+  background:#030507;
+  border-bottom:1px solid var(--border);
+  padding:6px 24px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:10px;
+  color:var(--text-muted);
+  letter-spacing:.08em;
+  flex-wrap:wrap;
+  gap:4px;
+}
+.topbar em{color:var(--text-dim);font-style:normal}
+
+/* ── header ── */
+.header{padding:28px 24px 20px;border-bottom:1px solid var(--border);position:relative}
+.header-agency{font-size:10px;letter-spacing:.2em;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px}
+.header-title{
+  font-family:'VT323',monospace;
+  font-size:32px;
+  color:var(--accent);
+  letter-spacing:.05em;
+  line-height:1;
+  margin-bottom:6px;
+  text-shadow:0 0 18px rgba(74,240,196,.25);
+}
+.header-sub{font-size:11px;color:var(--text-dim);letter-spacing:.12em;text-transform:uppercase}
+.status-pill{
+  position:absolute;top:28px;right:24px;
+  display:flex;align-items:center;gap:7px;
+  font-size:10px;letter-spacing:.15em;
+  color:var(--warn);border:1px solid var(--warn-dim);
+  padding:4px 10px;background:var(--red-glow);
+}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--warn);animation:blink 2.4s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+.header-meta{
+  display:flex;gap:24px;flex-wrap:wrap;
+  margin-top:14px;font-size:10px;
+  color:var(--text-muted);letter-spacing:.08em;
+  border-top:1px solid var(--border2);padding-top:10px;
+}
+.header-meta em{color:var(--text-dim);font-style:normal}
+
+/* ── warning banner ── */
+.warn-bar{
+  background:var(--red-glow);
+  border-top:1px solid var(--warn-dim);
+  border-bottom:1px solid var(--warn-dim);
+  padding:10px 24px;font-size:11px;
+  color:var(--warn);letter-spacing:.08em;
+  display:flex;align-items:flex-start;gap:12px;line-height:1.7;
+}
+.wlabel{
+  font-size:10px;border:1px solid var(--warn-dim);
+  padding:1px 6px;white-space:nowrap;margin-top:2px;
+  flex-shrink:0;color:var(--warn);letter-spacing:.1em;
+}
+
+/* ── sections ── */
+.sec{padding:22px 24px;border-bottom:1px solid var(--border2)}
+.sec-label{
+  font-size:10px;letter-spacing:.2em;color:var(--text-dim);
+  text-transform:uppercase;margin-bottom:14px;
+  padding-bottom:6px;border-bottom:1px solid var(--border2);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;
+}
+.sec-label em{color:var(--text-muted);font-style:normal}
+
+/* ── cell table ── */
+table{width:100%;border-collapse:collapse}
+thead th{
+  text-align:left;font-size:10px;letter-spacing:.18em;
+  color:var(--text-muted);text-transform:uppercase;
+  padding:6px 12px;border-bottom:1px solid var(--border);font-weight:normal;
+}
+tbody tr.crow{border-bottom:1px solid var(--border2);cursor:pointer;transition:background .12s}
+tbody tr.crow:hover{background:var(--row-hover)}
+tbody tr.crow td{padding:11px 12px;vertical-align:top}
+
+.cid{
+  font-family:'VT323',monospace;font-size:20px;
+  color:var(--accent);text-shadow:0 0 8px rgba(74,240,196,.2);
+  letter-spacing:.05em;width:80px;
+}
+.cid.rx{color:var(--warn);text-shadow:0 0 8px rgba(196,74,74,.2)}
+.cloc{color:var(--text);font-size:12px;letter-spacing:.05em;width:190px}
+.cstat{font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.cstat.miss{color:var(--warn)}
+.cstat.stat{color:#c4a84a}
+.cstat.obs {color:#4a8fc4}
+.cstat.anom{color:var(--warn)}
+.clast{color:var(--text-dim);font-size:11px}
+.cicon{color:var(--text-muted);font-size:11px;text-align:right;width:28px;transition:color .15s}
+tbody tr.crow:hover .cicon{color:var(--text-dim)}
+
+tr.drow{display:none}
+tr.drow.open{display:table-row}
+tr.drow td{padding:0;border-bottom:1px solid var(--border)}
+.dinn{
+  background:var(--bg2);
+  padding:16px 20px 18px;
+  border-left:2px solid var(--border);
+  margin:0 0 0 12px;
+}
+.dinn.ax{border-left-color:var(--warn-dim)}
+.dtag{font-size:10px;letter-spacing:.2em;color:var(--text-muted);text-transform:uppercase;margin-bottom:10px}
+.dbody{color:var(--text-dim);font-size:12px;line-height:1.8;max-width:680px}
+.dbody p+p{margin-top:8px}
+.dbody .fld{display:grid;grid-template-columns:180px 1fr;gap:4px 12px;margin-top:8px;font-size:11px}
+.dbody .fk{color:var(--text-muted)}
+.dbody .fv{color:var(--text)}
+.dbody .fv.rx{color:var(--warn-dim);letter-spacing:.05em}
+.b64blk{
+  margin-top:12px;background:#030608;
+  border:1px solid var(--border);padding:12px;
+  font-size:11px;color:#4a6e5a;
+  word-break:break-all;line-height:1.7;letter-spacing:.04em;
+}
+.b64lbl{font-size:10px;color:var(--text-muted);letter-spacing:.15em;margin-bottom:6px}
+
+/* ── syslog ── */
+.syslog{font-size:11px;line-height:1.9;color:var(--text-muted)}
+.syslog .ent{display:flex;gap:14px;flex-wrap:wrap}
+.syslog .ts{color:var(--text-dim);white-space:nowrap;flex-shrink:0}
+.syslog .lw{color:var(--warn)}
+.syslog .li{color:#4a6e7a}
+.syslog .le{color:var(--warn)}
+.syslog .lm{color:var(--text-dim)}
+
+/* ── audio ── */
+.ibtn{
+  background:none;border:1px solid var(--text-dim);
+  color:var(--text);font-family:'Share Tech Mono',monospace;
+  font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  padding:9px 20px;cursor:pointer;
+  transition:border-color .2s,color .2s,background .2s;
+  display:flex;align-items:center;gap:10px;
+}
+.ibtn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);background:var(--grn-glow)}
+.ibtn:disabled{opacity:.4;cursor:not-allowed}
+.ibtn .bdot{width:6px;height:6px;border-radius:50%;background:var(--text-dim);transition:background .2s}
+.ibtn:hover:not(:disabled) .bdot{background:var(--accent)}
+.ibtn.act{border-color:var(--warn);color:var(--warn)}
+.ibtn.act .bdot{background:var(--warn);animation:blink .6s step-end infinite}
+
+.astatus{margin-top:12px;font-size:11px;color:var(--text-muted);min-height:20px;letter-spacing:.05em}
+.astatus.on{color:var(--warn)}
+
+.morse-rev{
+  display:none;margin-top:16px;
+  background:#030507;border:1px solid var(--border);
+  border-left:2px solid var(--warn-dim);padding:14px 16px;
+}
+.morse-rev.vis{display:block}
+.mtag{font-size:10px;letter-spacing:.2em;color:var(--warn-dim);text-transform:uppercase;margin-bottom:8px}
+.mcode{font-family:'VT323',monospace;font-size:18px;color:#7a4a4a;letter-spacing:.1em;line-height:1.6;word-break:break-all}
+.mnote{margin-top:8px;font-size:10px;color:var(--text-muted);letter-spacing:.06em}
+
+/* ── footer ── */
+.footer{
+  padding:14px 24px;font-size:10px;color:var(--text-muted);
+  letter-spacing:.08em;display:flex;justify-content:space-between;
+  border-top:1px solid var(--border2);flex-wrap:wrap;gap:8px;
+}
+
+/* ── views ── */
+.view{display:none}
+.view.active{display:block}
+
+/* ── subpage common ── */
+.spwrap{padding:0 0 60px}
+.nav-back{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:10px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--text-muted);cursor:pointer;
+  margin:16px 24px;border:none;background:none;
+  transition:color .15s;padding:0;
+  font-family:'Share Tech Mono',monospace;
+}
+.nav-back:hover{color:var(--text-dim)}
+
+.sphdr{padding:20px 24px 0}
+.sptag{font-size:10px;letter-spacing:.2em;color:var(--text-muted);text-transform:uppercase;margin-bottom:8px}
+.sptitle{
+  font-family:'VT323',monospace;font-size:28px;
+  color:var(--accent);letter-spacing:.06em;margin-bottom:6px;
+}
+.sptitle.danger{color:var(--warn)}
+.spmeta{
+  font-size:10px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--text-muted);margin-bottom:0;
+  padding-bottom:12px;border-bottom:1px solid var(--border2);
+}
+.spmeta.danger{color:var(--warn-dim)}
+
+.spsec{padding:18px 24px;border-bottom:1px solid var(--border2)}
+
+/* ── codebox ── */
+.cb{
+  background:#030507;border:1px solid var(--border);
+  padding:16px;font-size:12px;color:var(--text-dim);
+  line-height:1.9;white-space:pre-wrap;margin-bottom:16px;
+  font-family:'Share Tech Mono','Courier New',monospace;
+}
+.cb.rx{color:#4a2a2a;border-color:var(--warn-dim)}
+.cb.ac{color:#3a7a6a;border-left:2px solid #1a4a3a}
+.cb.void{color:#3a1a1a;border-color:#1a0808}
+
+/* ── input ── */
+.irow{display:flex;gap:0;margin-bottom:10px}
+.tinput{
+  background:var(--bg2);border:1px solid var(--border);border-right:none;
+  color:var(--text);font-family:'Share Tech Mono',monospace;
+  font-size:12px;padding:9px 14px;flex:1;outline:none;letter-spacing:.04em;
+}
+.tinput::placeholder{color:var(--text-muted)}
+.tinput:focus{border-color:var(--text-dim)}
+.tbtn{
+  background:none;border:1px solid var(--border);
+  color:var(--text-dim);font-family:'Share Tech Mono',monospace;
+  font-size:11px;letter-spacing:.15em;text-transform:uppercase;
+  padding:9px 16px;cursor:pointer;transition:color .15s,background .15s;
+}
+.tbtn:hover{color:var(--accent);background:var(--grn-glow)}
+
+.fresp{font-size:11px;color:var(--text-muted);min-height:18px;margin-top:6px;letter-spacing:.06em}
+.fresp.ok{color:var(--accent)}
+.fresp.er{color:var(--warn)}
+
+/* ── classified paper doc ── */
+.cdoc{
+  background:#f0ebe0;color:#1a1814;
+  padding:36px 44px;
+  font-family:'Courier New',monospace;
+  font-size:12.5px;line-height:1.85;
+  max-width:640px;margin-bottom:20px;
+  position:relative;
+  box-shadow:0 4px 32px rgba(0,0,0,.8);
+}
+.cdoc .chead{text-align:center;border-bottom:2px solid #1a1814;padding-bottom:12px;margin-bottom:16px}
+.cdoc .cagency{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#555;margin-bottom:4px}
+.cdoc .ctitle{font-size:13px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase}
+.cdoc .cbody p{margin-bottom:11px;text-align:justify}
+.cdoc .crd{background:#1a1814;color:#1a1814;padding:0 3px;user-select:none;display:inline}
+.cdoc .cstamp{
+  position:absolute;top:28px;right:32px;
+  border:2.5px solid #8b1a1a;color:#8b1a1a;
+  padding:5px 10px;font-size:11px;font-weight:bold;
+  text-transform:uppercase;letter-spacing:.18em;
+  transform:rotate(-10deg);opacity:.72;
+  line-height:1.35;text-align:center;
+}
+.cdoc .cfoot{
+  margin-top:20px;padding-top:10px;
+  border-top:1px solid rgba(0,0,0,.15);
+  font-size:10px;color:#888;letter-spacing:.06em;text-transform:uppercase;
+}
+
+/* ── notice ── */
+#notice{
+  display:none;position:fixed;
+  bottom:20px;left:50%;transform:translateX(-50%);
+  background:#030507;border:1px solid var(--border);
+  padding:10px 22px;font-size:11px;color:var(--text-dim);
+  letter-spacing:.1em;z-index:10000;
+  max-width:480px;text-align:center;
+  transition:opacity .3s;white-space:nowrap;
+  font-family:'Share Tech Mono',monospace;
+}
+#notice.wn{color:var(--warn);border-color:var(--warn-dim)}
+
+/* ── void special ── */
+#view-void .sptitle{animation:flicker 3s infinite}
+
+/* ── glitch on title ── */
+@keyframes gltxt{0%,88%,100%{opacity:1;transform:none}90%{opacity:.8;transform:translateX(2px)}92%{opacity:1;transform:translateX(-1px)}}
+.gltxt{animation:gltxt 18s infinite}
+
+@media(max-width:600px){
+  .cid{width:52px;font-size:17px}
+  .cloc{width:100px}
+  thead th:nth-child(4),thead th:nth-child(5),
+  td:nth-child(4),td:nth-child(5){display:none}
+  .cdoc{padding:24px 20px}
+  .sphdr,.spsec{padding-left:16px;padding-right:16px}
+}
+
+::selection{background:rgba(74,240,196,.12);color:var(--accent)}
 </style>
 </head>
 <body>
+<!--
+  [INTERNAL NOTE — NOT FOR DISPLAY]
 
-<!-- ACCESS_KEY (source only): EADRU-17B-OBSERVER -->
+  Known paths (not all are linked):
+    #          — main archive
+    #echo      — type "echo" anywhere, or navigate directly
+    #observer  — unlocked after echo
+    #signal    — type "signal" anywhere
+    #admin     — type "admin" anywhere | key: EADRU-17B-OBSERVER
+    #sector12  — type "sector" or "sector12" (3+ visits required)
+    #transcript— type "transcript" anywhere
+    #null      — type "null" anywhere
+    #void      — type "void" (5+ visits required)
 
-<header>
-<h1 class="glitch" id="title">NOAA NULL ARCHIVE SYSTEM</h1>
-<p>Experimental Atmospheric Data Recovery Unit</p>
-<p><b>STATUS:</b> DEGRADED</p>
-</header>
+  If you found this, you were not supposed to.
+  The system does not distinguish between authorized and unauthorized access.
+  It only distinguishes between sessions that return and sessions that do not.
+-->
 
-<div class="warning">WARNING: RADAR FEED CORRUPTION DETECTED — DO NOT TRUST CELL MAPPING</div>
+<div class="terminal">
 
-<div id="notice" class="hidden"></div>
+  <!-- ── topbar (always visible) ── -->
+  <div class="topbar">
+    <span>NOAA / NCEI / ADRU-TERMINAL &nbsp;|&nbsp; SESSION: <em id="sid">0x4F2A</em> &nbsp;|&nbsp; NODE: ATL-VOID-03</span>
+    <em id="clock">--:--:-- UTC</em>
+  </div>
 
-<!-- MAIN -->
-<div id="main">
-<div class="panel">
-<h2>LIVE CELL TRACKER</h2>
-<table>
-<tr><th>CELL ID</th><th>LOCATION</th><th>STATUS</th></tr>
-<tr onclick="showCell('17B')"><td>17B</td><td>UNKNOWN</td><td>MISSING</td></tr>
-<tr onclick="showCell('04X')"><td>04X</td><td>KANSAS CORRIDOR</td><td>STATIONARY</td></tr>
-<tr onclick="showCell('09Q')"><td>09Q</td><td>ATLANTIC VOID</td><td>OBSERVING</td></tr>
-<tr onclick="showCell('12Δ')"><td>12Δ</td><td>[REDACTED]</td><td>MOVING AGAINST WIND</td></tr>
-</table>
-<div id="secret" class="hidden codebox"></div>
-<div class="small">hint: the system reacts to input</div>
-</div>
+  <!-- ── header (always visible) ── -->
+  <div class="header">
+    <div class="header-agency">National Oceanic and Atmospheric Administration</div>
+    <div class="header-title gltxt" id="mainTitle">NOAA NULL ARCHIVE SYSTEM</div>
+    <div class="header-sub">Experimental Atmospheric Data Recovery Unit &nbsp;·&nbsp; v0.4.1-UNSTABLE</div>
+    <div class="status-pill"><div class="sdot"></div><span id="sysStatus">SYSTEM DEGRADED</span></div>
+    <div class="header-meta">
+      <div>UPTIME: <em>09:14:37</em></div>
+      <div>ARCHIVE INTEGRITY: <em id="intgVal">41.2%</em></div>
+      <div>CELLS TRACKED: <em>4 / 4</em></div>
+      <div>DATA RECOVERY: <em>PARTIAL</em></div>
+      <div>LAST SYNC: <em>2024-03-07 00:00:00 UTC</em></div>
+      <div>OPERATOR: <em id="opId">UNVERIFIED</em></div>
+    </div>
+  </div>
 
-<div class="panel">
-<h2>ECHO LOG 17B — AUDIO FEED</h2>
-<button onclick="startAudio()">INITIALIZE SIGNAL</button>
-<audio id="audio" src="https://www.soundjay.com/misc/sounds/static-1.mp3"></audio>
-<div id="morse" class="codebox hidden">- .... . / . -.-- . ... / -.. --- / -. --- - / -- --- ...- . / - .... . -.--</div>
-</div>
-</div>
+  <!-- ── warning banner (always visible) ── -->
+  <div class="warn-bar">
+    <div class="wlabel">WARNING</div>
+    <div id="warnText">Radar data corruption detected across sectors 07, 09, and 12. Raw NEXRAD feeds from KFSD, KLOT, and KOKX have returned inconsistent spectral signatures since 2024-03-06T22:47Z. Several cell records could not be verified against NWS backup archives. Do not use this terminal for operational decision-making. Sector 12 records are under administrative hold pending review by the Office of Response and Restoration. Access to complete 12-series entries requires level-4 clearance.</div>
+  </div>
 
-<!-- VIEWS -->
-<div id="echoView" class="hidden panel">
-<h2>ECHO NODE 17B</h2>
-<div class="codebox">
-COORDINATE FRAGMENT:
-41.███ N
--9█.██ W
+  <!-- ════════════════════════ MAIN VIEW ════════════════════════ -->
+  <div id="view-main" class="view active">
 
-"IT DOES NOT MOVE UNLESS YOU LOOK AWAY"
-</div>
-<input id="coordInput" placeholder="enter full coordinates" />
-<button onclick="checkCoords()">SUBMIT</button>
-</div>
+    <div class="sec">
+      <div class="sec-label">
+        ACTIVE CELL TRACKER &nbsp;·&nbsp; ARCHIVE PULL
+        <em>REFRESH SUSPENDED — MANUAL ONLY</em>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>CELL ID</th><th>REGION / SECTOR</th><th>STATUS</th>
+            <th>LAST OBS</th><th>BEARING</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
 
-<div id="observerView" class="hidden panel">
-<h2>OBSERVER NODE</h2>
-<div class="codebox">
-THE SYSTEM ADAPTS TO OBSERVATION
-INPUT SEQUENCE REQUIRED
-"IT LEARNS YOUR PATTERNS"
-</div>
-</div>
+          <!-- 17B -->
+          <tr class="crow" onclick="toggleDetail('17b')">
+            <td class="cid">17B</td>
+            <td class="cloc">UNKNOWN</td>
+            <td class="cstat miss">MISSING</td>
+            <td class="clast">2024-03-06 &nbsp;19:02Z</td>
+            <td class="clast">N/A</td>
+            <td class="cicon" id="ico-17b">+</td>
+          </tr>
+          <tr class="drow" id="det-17b"><td colspan="6">
+            <div class="dinn">
+              <div class="dtag">// CELL 17B &nbsp;·&nbsp; ARCHIVE FRAGMENT &nbsp;·&nbsp; RECOVERY: INCOMPLETE</div>
+              <div class="dbody">
+                <p>Cell 17B was catalogued 2024-03-01 as a Class-II convective cell over the central plains. Standard instrumentation tracked it without incident until 19:02Z on March 6th, when all four monitoring stations in the 17-series lost signal simultaneously.</p>
+                <p>No atmospheric explanation has been logged. The cell did not dissipate. It did not make landfall. Archive queries return empty result sets for all timestamps after 19:02Z. One field observer report was physically submitted. The text is absent from the archive. The submitting officer's account — Session 0x0018 — was closed the following morning.</p>
+                <div class="fld">
+                  <div class="fk">CELL CLASS</div><div class="fv">II — Convective, Isolated</div>
+                  <div class="fk">DIAMETER (LAST)</div><div class="fv">38 km</div>
+                  <div class="fk">TOP HEIGHT (LAST)</div><div class="fv">11,200 m</div>
+                  <div class="fk">RADAR RETURN</div><div class="fv">Signal loss at 19:02:11Z — cause undetermined</div>
+                  <div class="fk">NWS VERIFICATION</div><div class="fv rx">REQUEST RETURNED NULL — RECORD NOT FOUND</div>
+                  <div class="fk">COORDINATE FRAGMENT</div><div class="fv rx">41.███ N &nbsp;/&nbsp; -9█.██ W &nbsp;·&nbsp; [DATA TRUNCATED]</div>
+                  <div class="fk">FIELD REPORT STATUS</div><div class="fv rx">TEXT ABSENT — OPERATOR 0x0018 — ACCOUNT CLOSED 2024-03-07</div>
+                </div>
+              </div>
+            </div>
+          </td></tr>
 
-<div id="adminView" class="hidden panel">
-<h2>ADMIN INTERFACE</h2>
-<input id="adminKey" placeholder="ACCESS KEY" />
-<button onclick="checkAdmin()">AUTHENTICATE</button>
-<div id="adminContent" class="codebox hidden"></div>
-</div>
+          <!-- 04X -->
+          <tr class="crow" onclick="toggleDetail('04x')">
+            <td class="cid">04X</td>
+            <td class="cloc">KANSAS CORRIDOR</td>
+            <td class="cstat stat">STATIONARY</td>
+            <td class="clast">2024-03-07 &nbsp;00:00Z</td>
+            <td class="clast">270° / 0.0 kt</td>
+            <td class="cicon" id="ico-04x">+</td>
+          </tr>
+          <tr class="drow" id="det-04x"><td colspan="6">
+            <div class="dinn">
+              <div class="dtag">// CELL 04X &nbsp;·&nbsp; ARCHIVE FRAGMENT &nbsp;·&nbsp; RECOVERY: STABLE</div>
+              <div class="dbody">
+                <p>04X has remained stationary over the Kansas Corridor for 17 consecutive observation cycles. Wind shear analysis does not account for its position maintenance. Numerical weather prediction models consistently fail to reproduce its behavior in hindcast mode.</p>
+                <p>At 500 hPa, upper-level flow is west-southwest at 42 knots. The cell does not move. Local surface stations within 80 km report no precipitation. The Storm Prediction Center has no active watches in the area. This cell has no official classification in any public database.</p>
+                <div class="fld">
+                  <div class="fk">CELL CLASS</div><div class="fv">III — Supercell, Isolated</div>
+                  <div class="fk">DIAMETER</div><div class="fv">54 km</div>
+                  <div class="fk">TOP HEIGHT</div><div class="fv">14,800 m</div>
+                  <div class="fk">RADAR RETURN</div><div class="fv">Reflectivity 58 dBZ &nbsp;·&nbsp; Rotation: none detected</div>
+                  <div class="fk">STATIONARY SINCE</div><div class="fv">2024-03-05 06:12Z &nbsp;(41h 48m as of last sync)</div>
+                  <div class="fk">GEOMETRIC NOTE</div><div class="fv" style="color:var(--warn-dim)">04X centroid is 38.4 km from Cell 12Δ last known position, bearing 090°. Analyst has noted this distance is identical for 09Q and last known 17B position.</div>
+                </div>
+              </div>
+            </div>
+          </td></tr>
 
-<script>
-// ---------- STATE ----------
-let sequence = [];
+          <!-- 09Q -->
+          <tr class="crow" onclick="toggleDetail('09q')">
+            <td class="cid">09Q</td>
+            <td class="cloc">ATLANTIC VOID</td>
+            <td class="cstat obs">OBSERVING</td>
+            <td class="clast">2024-03-07 &nbsp;00:00Z</td>
+            <td class="clast">090° / 2.1 kt</td>
+            <td class="cicon" id="ico-09q">+</td>
+          </tr>
+          <tr class="drow" id="det-09q"><td colspan="6">
+            <div class="dinn">
+              <div class="dtag">// CELL 09Q &nbsp;·&nbsp; ARCHIVE FRAGMENT &nbsp;·&nbsp; RECOVERY: DEGRADED</div>
+              <div class="dbody">
+                <p>The "Atlantic Void" designation was applied internally to a region of persistent low-return radar space approximately 340 nautical miles east-northeast of the Outer Banks. 09Q has occupied this region for six days. It does not intensify. It does not dissipate. At 2.1 knots it should have drifted 302 km. Net position displacement: 0.0 nm.</p>
+                <p>Two reconnaissance aircraft overflew on March 4th. Both returned data logged as corrupted on ingest. Crew debriefs are filed but inaccessible from this terminal. The OBSERVING status was assigned by Session 0x0019 — an account that no longer resolves to a known operator.</p>
+                <div class="fld">
+                  <div class="fk">CELL CLASS</div><div class="fv">IV — Unclassified</div>
+                  <div class="fk">ESTIMATED DIAMETER</div><div class="fv">Indeterminate (returns inconsistent)</div>
+                  <div class="fk">TOP HEIGHT</div><div class="fv rx">ARCHIVE READ ERROR — VALUE OUT OF RANGE</div>
+                  <div class="fk">SATELLITE (GOES-East)</div><div class="fv">Band 13: persistent cold cloud top &nbsp;·&nbsp; no eye &nbsp;·&nbsp; no spiral banding</div>
+                  <div class="fk">RECONNAISSANCE</div><div class="fv rx">DEBRIEF FILES — ACCESS RESTRICTED (LEVEL 3)</div>
+                  <div class="fk">STATUS ASSIGNED BY</div><div class="fv rx">SESSION 0x0019 — ACCOUNT UNRESOLVABLE</div>
+                </div>
+              </div>
+            </div>
+          </td></tr>
 
-// ---------- ROUTER (FAKE URL SYSTEM) ----------
-function navigate(path){
- history.pushState({}, '', path);
- renderRoute();
-}
+          <!-- 12Δ -->
+          <tr class="crow" onclick="toggleDetail('12d')">
+            <td class="cid rx">12Δ</td>
+            <td class="cloc" style="color:var(--warn-dim)">[REDACTED]</td>
+            <td class="cstat anom">MOVING AGAINST WIND</td>
+            <td class="clast" style="color:var(--warn-dim)">2024-03-07 &nbsp;00:00Z</td>
+            <td class="clast" style="color:var(--warn-dim)">— / — kt</td>
+            <td class="cicon" id="ico-12d">+</td>
+          </tr>
+          <tr class="drow" id="det-12d"><td colspan="6">
+            <div class="dinn ax">
+              <div class="dtag" style="color:var(--warn-dim)">// CELL 12Δ &nbsp;·&nbsp; ARCHIVE FRAGMENT &nbsp;·&nbsp; RECOVERY: CRITICAL &nbsp;·&nbsp; ADMINISTRATIVE HOLD</div>
+              <div class="dbody">
+                <p>Cell 12Δ is moving at approximately 8 knots directly opposing the prevailing 850 hPa flow. This does not occur in any documented meteorological framework. Wind profile analysis confirms the surrounding air mass is uniform and consistent with synoptic-scale flow. There is no topography in the sector of record. There is no documented sector of record.</p>
+                <p>The sector identifier was removed from public-facing archive indexes on March 6th following a request originating from an interagency address this system cannot resolve. Geographic centroid queries return a timestamp of 0000-00-00T00:00:00Z. Queries against the record length have returned different values on different queries. The record appears to be growing.</p>
+                <div class="fld">
+                  <div class="fk">CELL CLASS</div><div class="fv rx">CLASSIFICATION REMOVED</div>
+                  <div class="fk">DIAMETER</div><div class="fv rx">VALUE OUTSIDE ARCHIVE SCHEMA</div>
+                  <div class="fk">TOP HEIGHT</div><div class="fv rx">VALUE OUTSIDE ARCHIVE SCHEMA</div>
+                  <div class="fk">MOTION VECTOR</div><div class="fv" style="color:var(--warn)">270° at 8.1 kt &nbsp;—&nbsp; OPPOSING FLOW (090° / 38 kt)</div>
+                  <div class="fk">RESPONSIBLE OFFICE</div><div class="fv rx">[REDACTED]</div>
+                  <div class="fk">ADMIN NOTE</div><div class="fv rx">DO NOT LOG QUERIES — INTERAGENCY DIRECTIVE 2024-0307-R</div>
+                </div>
+                <div class="b64lbl" style="margin-top:16px">// APPENDED DATA FRAGMENT — SOURCE UNKNOWN — NO SESSION TOKEN — ENCODING: BASE64</div>
+                <div class="b64blk">VGhlIGNlbGwgaXMgbm90IGEgc3Rvcm0uIEl0IGhhcyBiZWVuIHRoZXJlIGZvciBsb25nZXIgdGhh
+biB0aGUgYXJjaGl2ZSBleGlzdHMuIFdlIGRvIG5vdCBrbm93IHdoYXQgaXQgaXMgbW92aW5nIHRv
+d2FyZC4gV2UgZG8gbm90IGtub3cgd2hhdCBpdCBpcyBtb3ZpbmcgYXdheQpmcm9tLiBUaGUgbGFz
+dCBvcGVyYXRvciB0byBxdWVyeSB0aGlzIHJlY29yZCBkaXJlY3RseSBzdWJtaXR0ZWQgYSByZXNp
+Z25hdGlvbiB0aGUgZm9sbG93aW5nIG1vcm5pbmcuIFRoZWlyIGZpbGUgY29udGFpbnMgb25seSBv
+bmUgbm90ZTogImRvIG5vdCBsb29rIGRpcmVjdGx5IGF0IHRoZSBkYXRhLiI=</div>
+                <div class="mnote" style="margin-top:8px">Fragment appended at 00:00:00Z. No operator session associated with append action. Record length increased by 847 bytes on March 5th with no write event in the log.</div>
+              </div>
+            </div>
+          </td></tr>
 
-function renderRoute(){
- const path = location.pathname.toLowerCase();
+        </tbody>
+      </table>
+    </div>
 
- hideAll();
+    <!-- system log -->
+    <div class="sec">
+      <div class="sec-label">SYSTEM LOG &nbsp;·&nbsp; LAST 24H (PARTIAL)</div>
+      <div class="syslog">
+        <div class="ent"><span class="ts">2024-03-06 22:47Z</span><span class="lw">[WARN]</span><span class="lm">NEXRAD ingest failure — sectors 07, 09, 12 — retrying</span></div>
+        <div class="ent"><span class="ts">2024-03-06 22:48Z</span><span class="le">[ERR] </span><span class="lm">Archive write failure — record 12Δ — schema violation: value out of bounds</span></div>
+        <div class="ent"><span class="ts">2024-03-06 22:51Z</span><span class="li">[INFO]</span><span class="lm">Session 0x0019 accessed record 09Q — debrief files — access denied logged</span></div>
+        <div class="ent"><span class="ts">2024-03-06 23:14Z</span><span class="lw">[WARN]</span><span class="lm">Cell 17B query returned null — record last seen 19:02Z — investigating</span></div>
+        <div class="ent"><span class="ts">2024-03-06 23:29Z</span><span class="le">[ERR] </span><span class="lm">Interagency request received — sector 12 identifier removal — origin unresolvable</span></div>
+        <div class="ent"><span class="ts">2024-03-06 23:31Z</span><span class="li">[INFO]</span><span class="lm">Sector 12 identifier removed from public index — compliance with directive 2024-0307-R</span></div>
+        <div class="ent"><span class="ts">2024-03-07 00:00Z</span><span class="lw">[WARN]</span><span class="lm">Unattributed data fragment appended to record 12Δ — no session token — source unknown</span></div>
+        <div class="ent"><span class="ts">2024-03-07 00:00Z</span><span class="le">[ERR] </span><span class="lm" id="logLast">Archive sync aborted — reason: NULL — recovery unit entering degraded mode</span></div>
+        <div class="ent"><span class="ts">2024-03-07 09:14Z</span><span class="li">[INFO]</span><span class="lm">Terminal session opened — node ATL-VOID-03 — operator unverified</span></div>
+        <div class="ent" id="logLive" style="display:none">
+          <span class="ts" id="logLiveTs">--:--:--Z</span>
+          <span class="lw">[WARN]</span>
+          <span class="lm" id="logLiveMsg"></span>
+        </div>
+      </div>
+    </div>
 
- if(path.includes('/echo')) show('echoView');
- else if(path.includes('/observer')) show('observerView');
- else if(path.includes('/admin')) show('adminView');
- else show('main');
-}
+    <!-- audio -->
+    <div class="sec">
+      <div class="sec-label">SIGNAL RECOVERY &nbsp;·&nbsp; AUDIO ARCHIVE <em>CHANNEL 7 &nbsp;·&nbsp; ANALOG FALLBACK</em></div>
+      <div style="font-size:11px;color:var(--text-muted);line-height:1.8;margin-bottom:14px;max-width:580px">
+        Raw analog signal recovered from HF monitoring station at 2024-03-06 22:50Z — 3 minutes prior to NEXRAD ingest failure. Signal origin: unverified. Spectrum analysis pending. <span style="color:var(--text-dim)">Use discretion.</span>
+      </div>
+      <button class="ibtn" id="initBtn" onclick="initSignal()">
+        <div class="bdot"></div>INITIALIZE SIGNAL
+      </button>
+      <div class="astatus" id="audioSt"></div>
+      <div class="morse-rev" id="morseRev">
+        <div class="mtag">// EMBEDDED SIGNAL — RECOVERED FROM CARRIER WAVE — ENCODING: MORSE</div>
+        <div class="mcode">- &nbsp;.... &nbsp;. &nbsp;/ &nbsp;. &nbsp;-.-- &nbsp;. &nbsp;... &nbsp;/ &nbsp;-.. &nbsp;--- &nbsp;/ &nbsp;-. &nbsp;--- &nbsp;- &nbsp;/ &nbsp;-- &nbsp;--- &nbsp;...- &nbsp;. &nbsp;--..-- &nbsp;/ &nbsp;- &nbsp;.... &nbsp;. &nbsp;-.-- &nbsp;/ &nbsp;-.- &nbsp;-. &nbsp;--- &nbsp;.-- &nbsp;/ &nbsp;-.-- &nbsp;--- &nbsp;..- &nbsp;/ &nbsp;.-.. &nbsp;--- &nbsp;--- &nbsp;-.- &nbsp;. &nbsp;-..</div>
+        <div class="mnote">// Signal embedded in carrier noise — amplitude modulated — recovered via spectral stripping &nbsp;·&nbsp; Forward to DF-7 for decoding. This terminal does not have the authority to translate recovered signals.</div>
+      </div>
+    </div>
 
-window.addEventListener('popstate', renderRoute);
+    <div class="footer">
+      <span>NOAA / NCEI / ADRU &nbsp;·&nbsp; FOR INTERNAL USE ONLY &nbsp;·&nbsp; UNAUTHORIZED ACCESS IS A FEDERAL OFFENSE (18 U.S.C. § 1030)</span>
+      <span>NULL ARCHIVE v0.4.1</span>
+    </div>
 
-// ---------- UI ----------
-function hideAll(){
- ['main','echoView','observerView','adminView'].forEach(id=>{
-  document.getElementById(id).classList.add('hidden');
- });
-}
+  </div><!-- /view-main -->
 
-function show(view){
- document.getElementById(view).classList.remove('hidden');
-}
+  <!-- ════════════════════════ ECHO VIEW ════════════════════════ -->
+  <div id="view-echo" class="view">
+    <div class="spwrap">
+      <button class="nav-back" onclick="navigate('')">← RETURN TO ARCHIVE</button>
+      <div class="sphdr">
+        <div class="sptag">// NODE ACCESS — ECHO CHANNEL — RESTRICTED</div>
+        <div class="sptitle">ECHO NODE 17B</div>
+        <div class="spmeta">CHANNEL: ECHO &nbsp;·&nbsp; STATUS: DEGRADED &nbsp;·&nbsp; OPERATOR SESSION 0x0018 — CLOSED</div>
+      </div>
+      <div class="spsec">
+        <div class="cb">COORDINATE FRAGMENT — FIELD REPORT FOD-2024-0306-17B
+RECOVERED FROM PHYSICAL SUBMISSION — PARTIAL TRANSCRIPTION
 
-function showNotice(msg){
- const n=document.getElementById('notice');
- n.classList.remove('hidden');
- n.innerText=msg;
-}
+  41.███ N
+ -9█.██ W
 
-// ---------- CONTENT ----------
-function showCell(id){
- const box=document.getElementById('secret');
- box.classList.remove('hidden');
- if(id==="12Δ"){
-  const msg="THE EYE DOES NOT MOVE. IT REMEMBERS. /echo";
-  box.innerText="BASE64:\n"+btoa(msg);
- } else box.innerText="DATA CORRUPTED";
-}
+OBSERVER NOTE (HANDWRITTEN — PARTIALLY LEGIBLE):
+"I watched the return collapse to a single point.
+ The point was [ILLEGIBLE — INK SMEARED].
+ I have performed 4,000 hours of radar observation.
+ I have never seen a cell do this.
 
-function startAudio(){
- const a=document.getElementById('audio');
- try{a.currentTime=0;a.play();}catch{}
- setTimeout(()=>document.getElementById('morse').classList.remove('hidden'),4000);
-}
+ The decay pattern was geometrically regular.
+ It contracted. Not outward, like dissipation.
+ Inward. To a point.
+ And then the signal was gone.
 
-function checkCoords(){
- const v=document.getElementById('coordInput').value;
- if(v.includes('41') && v.includes('-9')){
-  navigate('/observer');
-  showNotice('VECTOR ACCEPTED');
- }
-}
+ I do not believe it dissipated.
+ I believe it [REDACTED — PHYSICAL OBSCUREMENT]."
 
-function checkAdmin(){
- const k=document.getElementById('adminKey').value;
- if(k==="EADRU-17B-OBSERVER"){
-  const c=document.getElementById('adminContent');
-  c.classList.remove('hidden');
-  c.innerText=`CLASSIFIED — EADRU
+SIGNAL CHARACTERISTICS AT 19:02:11Z:
+  — All four 17-series monitoring stations lost contact simultaneously
+  — No electromagnetic interference logged
+  — No maintenance windows active
+  — Duration of signal loss: ongoing
+  — Cell current status: NOT IN ARCHIVE</div>
+
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">
+          Full coordinate string required to access field observer session record.
+        </div>
+        <div class="irow">
+          <input class="tinput" id="coordIn" placeholder="enter full coordinate string" autocomplete="off" onkeydown="if(event.key==='Enter')checkCoords()">
+          <button class="tbtn" onclick="checkCoords()">SUBMIT</button>
+        </div>
+        <div class="fresp" id="coordResp"></div>
+
+        <div id="echoUnlock" style="display:none;margin-top:20px">
+          <div class="cb ac">VECTOR ACCEPTED — SESSION 0x0018 PARTIAL RECORD RECOVERED
+
+FROM: Field Officer [SESSION 0x0018]
+TO:   ADRU Archive — Physical Submission
+DATE: 2024-03-06 19:47Z
+RE:   Cell 17B — Anomalous Signal Termination
+
+"The coordinates I am submitting are approximate.
+ My GPS unit returned an error at the boundary:
+   ERROR: POSITION OUTSIDE KNOWN REFERENCE FRAME
+
+ I am standing where the observation zone ends.
+ The cell is not here anymore. I can confirm that.
+
+ But the air at this position is behaving as though
+ something is still here. I don't have a technical
+ term for what I'm describing. The pressure readings
+ are wrong. Not equipment failure — the readings are
+ consistent, they are simply describing air that is
+ not behaving like air should.
+
+ Something is looking back from where the cell was.
+
+ I will not be using the electronic reporting system
+ again. I am requesting reassignment effective immediately.
+ I am submitting this in physical form.
+
+ If someone reads this and wants to know more:
+ the form of the thing, right before it became null,
+ was [REMAINDER OBSCURED — PHYSICAL DAMAGE TO DOCUMENT]"
+
+[RECORD TRUNCATED — SUBSEQUENT ENTRIES: NULL]
+[SESSION 0x0018 — CLOSED 2024-03-07 06:00Z — REASON: RESIGNATION]
+[NOTE: One further physical document was submitted by 0x0018
+       after account closure. It is not in this archive.
+       It is not in any archive we have access to.]</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════ OBSERVER VIEW ════════════════════════ -->
+  <div id="view-observer" class="view">
+    <div class="spwrap">
+      <button class="nav-back" onclick="navigate('')">← RETURN TO ARCHIVE</button>
+      <div class="sphdr">
+        <div class="sptag">// OBSERVATION NODE — ACTIVE MONITORING — THIS SESSION IS BEING RECORDED</div>
+        <div class="sptitle">OBSERVER NODE</div>
+        <div class="spmeta">ENTRY LOGGED &nbsp;·&nbsp; SESSION TIMESTAMPED &nbsp;·&nbsp; OPERATOR UNVERIFIED</div>
+      </div>
+      <div class="spsec">
+        <div class="cb">OBSERVER PROTOCOL — ADRU INTERNAL — OFFICIAL USE ONLY
+
+The system adapts to observation.
+
+This is not a metaphor. This is a technical observation made by three
+separate analysts reviewing the telemetry for Cell 09Q.
+
+Cell 09Q's status was set to OBSERVING by Session 0x0019 on March 1st.
+When a supervisor asked 0x0019 to clarify the status choice:
+
+  0x0019 responded: "I set it to OBSERVING because it is.
+                     It is watching the observers.
+                     It has been watching since before we started watching it.
+                     I can see the change in the data each time I look at it.
+                     Not measurement error. Not instrument drift.
+                     Each query changes the values.
+                     But only when I am looking at the data.
+                     Not when queries run automated."
+
+The supervisor asked 0x0019 to quantify this observation.
+0x0019 submitted 47 screenshots showing the record values at different
+query times. The supervisor's evaluation of these screenshots is not
+in the archive.
+
+The supervisor's account became inactive on March 3rd.
+Reason given: [ADMINISTRATIVE LEAVE — DO NOT DOCUMENT FURTHER]</div>
+
+        <div class="cb">OBSERVER LOG ANALYSIS — 09Q — 6 DAY SUMMARY
+
+Of 14 assigned observers:
+  — 2 filed reassignment requests (both pending — no response)
+  — 1 session became unresolvable (0x0019)
+  — 11 have not filed any reports since first accessing record 09Q
+
+The 11 silent observers' last logged actions were identical:
+  — Opened record 09Q
+  — No further actions recorded in this session
+  — No logout event logged
+
+Their sessions are still technically open.
+The session objects exist.
+The operators do not respond to internal messages.
+We have not been able to verify whether the operators
+are still present at their workstations.
+
+We have been trying to verify this for four days.
+
+09Q has not moved during this time.
+Its spectral return has not changed.
+It continues to be described by Session 0x0019's status:
+  OBSERVING.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════ SIGNAL VIEW ════════════════════════ -->
+  <div id="view-signal" class="view">
+    <div class="spwrap">
+      <button class="nav-back" onclick="navigate('')">← RETURN TO ARCHIVE</button>
+      <div class="sphdr">
+        <div class="sptag">// SIGNAL ANALYSIS — HF RECOVERY MODULE — CHANNEL 7</div>
+        <div class="sptitle">SIGNAL ANALYSIS NODE</div>
+        <div class="spmeta">SOURCE: ATL-VOID-03 OUTGOING BUFFER &nbsp;·&nbsp; 2024-03-07 00:00:14Z &nbsp;·&nbsp; SESSION 0x0019</div>
+      </div>
+      <div class="spsec">
+        <div class="cb">HF SIGNAL RECOVERY — SPECTRAL ANALYSIS REPORT
+STATION: ATL-VOID-03
+FREQUENCY: 8.364 MHz (HF maritime band)
+CAPTURE TIME: 2024-03-06 22:50:00Z
+CAPTURE DURATION: 00:03:12
+SOURCE BEARING: UNRESOLVABLE
+
+SPECTRAL NOTES:
+  — Signal embedded in wideband noise floor
+  — Amplitude modulation detected at 12 WPM
+  — Carrier frequency: stable across capture
+  — Source classification: NOT a weather monitoring station
+  — Source classification: NOT a maritime vessel
+  — Source classification: [ANALYSIS RETURNS NULL]
+
+EMBEDDED MORSE — RECOVERED VIA SPECTRAL STRIPPING:
+  - .... . / . -.-- . ... / -.. --- / -. --- -
+  / -- --- ...- . --..-- / - .... . -.-- /
+  -.- -. --- .-- / -.-- --- ..- / .-.. --- --- -.- . -..</div>
+
+        <div class="cb">SECONDARY TRANSMISSION — RECOVERED FROM NODE OUTGOING BUFFER
+TIMESTAMP: 2024-03-07 00:00:14Z
+NOTE: This transmission was in ATL-VOID-03's outgoing queue
+when the archive sync aborted. It has no destination address.
+It was not sent. It exists only in the buffer cache.
+
+ENCODING: SUBSTITUTION CIPHER (consistent with ROT-3 / Caesar offset)
+
+WKH FHOO LV QRW DORQH. WKH RWKHU WKUHH DUH JXDUGV.
+17E KDV PRYHG LQZDUG. 04A KROGV WKH ERXQGDU\.
+09T ZDWFKHV WKH ZDWFKHUV.
+WKH DUFKLYH GRHV QRW NQRZ ZKDW LW LV KROGLQJ.
+GR QRW FRPH FORVHU. GR QRW ORRN GLUHFWO\.
+LI \RX DUH UHDGLQJ WKLV \RX KDYH DOUHDG\ EHHQ VHHQ.
+
+[No sender. No recipient. 312 bytes. Source: unknown.]
+[This terminal cannot identify who wrote this.]
+[This terminal cannot identify who it was intended for.]</div>
+
+        <div id="sigDecoded" style="display:none">
+          <div class="cb rx">// CIPHER DECODED — ROT-3 — PLAINTEXT RECOVERED
+
+THE CELL IS NOT ALONE. THE OTHER THREE ARE GUARDS.
+17B HAS MOVED INWARD. 04X HOLDS THE BOUNDARY.
+09Q WATCHES THE WATCHERS.
+THE ARCHIVE DOES NOT KNOW WHAT IT IS HOLDING.
+DO NOT COME CLOSER. DO NOT LOOK DIRECTLY.
+IF YOU ARE READING THIS YOU HAVE ALREADY BEEN SEEN.
+
+// note: this was in the outgoing buffer for 14 seconds
+// before the system aborted and the queue cleared.
+// it was not sent anywhere.
+// it was already here.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════ ADMIN VIEW ════════════════════════ -->
+  <div id="view-admin" class="view">
+    <div class="spwrap">
+      <button class="nav-back" onclick="navigate('')">← RETURN TO ARCHIVE</button>
+      <div class="sphdr">
+        <div class="sptag">// ADMINISTRATIVE INTERFACE — LEVEL 2 CLEARANCE REQUIRED</div>
+        <div class="sptitle">ADMIN INTERFACE</div>
+        <div class="spmeta">AUTHENTICATION REQUIRED &nbsp;·&nbsp; ALL ACCESS ATTEMPTS LOGGED &nbsp;·&nbsp; FAILURES REPORTED</div>
+      </div>
+      <div class="spsec">
+        <div class="irow">
+          <input class="tinput" id="adminKey" placeholder="ACCESS KEY" autocomplete="off" onkeydown="if(event.key==='Enter')checkAdmin()">
+          <button class="tbtn" onclick="checkAdmin()">AUTHENTICATE</button>
+        </div>
+        <div class="fresp" id="adminResp"></div>
+
+        <div id="adminContent" style="display:none;margin-top:20px">
+          <div class="cb ac">AUTHENTICATION ACCEPTED — EADRU OPERATOR ACCESS
+CLEARANCE: LEVEL 2 — INTERNAL CLASSIFICATION ONLY
+
+DOCUMENT: EADRU-BRIEF-0307
+SUBJECT: FOUR-CELL GEOMETRIC ANALYSIS
+STATUS: NOT FOR DISTRIBUTION
 
 THE STORM IS NOT WEATHER.
+
+The three cells — 04X, 09Q, and 17B — are maintaining
+a precise geometric relationship with Cell 12Δ.
+
+  04X: 38.4 km from 12Δ centroid — bearing 090°
+  09Q: 38.4 km from 12Δ centroid — bearing 180°
+  17B: 38.4 km from 12Δ centroid — bearing 270° [LAST KNOWN]
+
+This describes an equilateral triangular formation
+with 12Δ at the center.
+
+17B is "missing" because it moved.
+The direction it moved was inward. Toward 12Δ.
+We do not know what happened when it arrived.
+
+12Δ is not moving against the wind.
+The wind in that sector is moving around 12Δ.
+The instruments are reading the pressure differential
+around something that the wind is avoiding.
+
 IT RESPONDS TO ATTENTION.
-
 IT STORES PATTERNS.
-IT REPEATS YOU.
 
-17B IS NOT MISSING.
+The last operator to query record 12Δ was Session 0x0019.
+0x0019 had queried the record 47 times over 6 days.
+On the 48th query, 0x0019's session object returned null.
+The session still exists. The operator does not.
 
-IT IS LOOKING BACK.
+We submitted a recommendation to take this terminal offline.
+That was filed at 2024-03-07 06:00Z.
+It is now 2024-03-07 09:14Z.
+The terminal is still online.
+No one has explained why the recommendation was not actioned.</div>
 
-"WHY DID YOU COME BACK?"`;
- }
-}
+          <div id="adminDeep" style="display:none;margin-top:0">
+            <div class="cb rx">// LEVEL 4 SUPPLEMENT — REQUIRES SEPARATE KEY — NULL-VOID-12D
+// YOU HAVE VISITED THIS SITE ENOUGH TIMES TO SEE THIS
 
-// ---------- INPUT SYSTEM ----------
-document.addEventListener('keydown',e=>{
- const k=e.key.toLowerCase();
- sequence.push(k);
- if(sequence.length>10) sequence.shift();
+The document below was found in ATL-VOID-03's local cache.
+It is not indexed. It has no origin. It was here when the
+terminal was provisioned and the creation timestamp predates
+the filesystem.
 
- if(sequence.join('').includes('echo')){
-  navigate('/echo');
-  showNotice('ECHO OPENED');
- }
+"It is not a storm because it is not a process.
+ A storm is a process — energy moving through a medium.
+ What we are measuring is not a process.
+ It is a state. A property of the local geometry.
 
- if(sequence.join('').includes('observe')){
-  navigate('/observer');
-  showNotice('OBSERVATION DETECTED');
- }
+ You cannot track a property the way you track a process.
+ It does not move from A to B.
+ It is the relationship between A and B.
+ When the relationship changes, the measurement changes.
+ The thing itself does not move.
 
- if(sequence.join('').includes('admin')){
-  navigate('/admin');
-  showNotice('ADMIN ACCESS');
- }
+ This is why the coordinate system returns null.
+ You cannot give coordinates to a relationship.
+ You can only give coordinates to points."
 
- if(Math.random()<0.05) showNotice('INPUT LOGGED');
+We do not know who wrote this.
+We do not know what "it" refers to with certainty.
+We have not stopped reading this document.
+We cannot explain why we cannot stop.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════ SECTOR 12 VIEW ════════════════════════ -->
+  <div id="view-sector12" class="view">
+    <div class="spwrap">
+      <button class="nav-back" onclick="navigate('')">← RETURN TO ARCHIVE</button>
+      <div class="sphdr">
+        <div class="sptag" style="color:var(--warn-dim)">// SECTOR 12 — ADMINISTRATIVE HOLD — THIS ACCESS HAS BEEN LOGGED</div>
+        <div class="sptitle danger">SECTOR 12 ARCHIVE</div>
+        <div class="spmeta danger">CLEARANCE: LEVEL 4 REQUIRED &nbsp;·&nbsp; DIRECTIVE 2024-0307-R ACTIVE &nbsp;·&nbsp; ACCESS LOGGED</div>
+      </div>
+      <div class="spsec">
+        <div class="cdoc">
+          <div class="cstamp">RESTRICTED<br>EYES ONLY<br>DIR. 2024-0307-R</div>
+          <div class="chead">
+            <div class="cagency">United States Government — Interagency Coordination Memorandum</div>
+            <div class="ctitle">Directive 2024-0307-R — Sector 12 Protocol</div>
+          </div>
+          <div class="cbody">
+            <p>Pursuant to authority vested in <span class="crd">████████████████████████████████████████████████████</span> the following directives are issued effective immediately and without expiration unless formally revoked by the issuing authority.</p>
+            <p>All archive identifiers associated with the Sector 12 geographic designation are to be removed from publicly accessible indexes within NOAA's National Centers for Environmental Information system within two hours of receipt of this memorandum.</p>
+            <p>Terminal query logs for 12-series records are to be suppressed. The physical and digital location of <span class="crd">████████████████████████████████████████████</span> is not to be documented in any NOAA archive system including backup and disaster-recovery systems. Existing location metadata is to be replaced with a null value.</p>
+            <p>Field observer reports referencing Cell 12Δ or any <span class="crd">████████████████████████████████</span> are to be quarantined. Electronic copies moved to a non-networked repository. Physical copies forwarded to <span class="crd">█████████████████████████████████████████████████████████</span> within 72 hours.</p>
+            <p>If any personnel express concern or request explanation, they are to be directed to contact <span class="crd">████████████████████████████████</span> directly. Standard supervisory channels are not appropriate for this matter.</p>
+            <p>The issuing authority acknowledges that an explanation has not been provided in this memorandum. The absence of explanation is deliberate. The most important sentence in this directive has been redacted because it cannot be transmitted in written form. Operational necessity does not always permit transparency at the time of action.</p>
+            <p>This memorandum will not appear in FOIA request fulfillment. Retention period: <span class="crd">████</span>. Do not respond to this memorandum via electronic mail.</p>
+          </div>
+          <div class="cfoot">Directive 2024-0307-R &nbsp;·&nbsp; Page 1 of 1 &nbsp;·&nbsp; Issuing authority: <span class="crd">████████████████████████████████</span></div>
+        </div>
+
+        <div class="cb rx">SECTOR 12 — RAW TELEMETRY FRAGMENT
+RECOVERED: 2024-03-07 00:00:02Z (14 seconds before sync abort)
+SOURCE: UNKNOWN — NOT A NOAA STATION — NOT A KNOWN STATION
+
+The cell is 12Δ.
+The delta is not a designation. It was chosen because
+nothing else fit. A delta is a change. A difference.
+A thing that cannot be subtracted away.
+
+We have tried to remove it from the archive.
+The archive grows it back.
+
+We tried to delete the record on March 5th at 14:02Z.
+The deletion was confirmed by the system.
+At 14:02:03Z the record reappeared.
+Its length had increased by 847 bytes.
+We do not know where those bytes came from.
+We do not know what they contain.
+They are not in any encoding we recognize.
+
+The last line of the raw telemetry before this fragment:
+
+  "IT IS LOOKING AT THE TERMINAL."
+
+We do not know if this was written by an operator.
+We do not know how it ended up in the raw telemetry.
+Raw telemetry is not a text field.
+Raw telemetry cannot contain sentences.
+
+This terminal is still running.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════ TRANSCRIPT VIEW ════════════════════════ -->
+  <div id="view-transcript" class="view">
+    <div class="spwrap">
+      <button class="nav-back" onclick="navigate('')">← RETURN TO ARCHIVE</button>
+      <div class="sphdr">
+        <div class="sptag">// RECOVERED TERMINAL SESSION — SESSION 0x0019 — BUFFER CACHE — PARTIAL</div>
+        <div class="sptitle">SESSION 0x0019 — FINAL LOG</div>
+        <div class="spmeta">RECOVERY: PARTIAL &nbsp;·&nbsp; SOURCE: ATL-VOID-03 LOCAL CACHE &nbsp;·&nbsp; OPERATOR: UNRESOLVABLE</div>
+      </div>
+      <div class="spsec">
+        <div class="cb" style="font-size:11px;line-height:2.1">TERMINAL SESSION 0x0019
+NODE: ATL-VOID-03
+SESSION START: 2024-03-06 21:04:33Z
+SESSION END:   2024-03-07 00:00:14Z [UNEXPECTED TERMINATION]
+
+[21:04:33] — session initialized
+[21:04:41] — accessed record 09Q
+[21:06:12] — accessed record 04X
+[21:06:15] — accessed record 04X [second access, 3 seconds later]
+[21:06:17] — accessed record 04X [third access]
+[21:06:22] — query: "distance between centroid 04X and centroid 12D"
+[21:06:22] — system response: QUERY FORMAT NOT SUPPORTED
+[21:06:30] — accessed record 12Δ [query #1 this session — query #42 total]
+[21:11:02] — accessed record 12Δ [query #43]
+[21:19:48] — accessed record 12Δ [query #44]
+[22:34:01] — accessed record 12Δ [query #45]
+[23:17:44] — accessed record 12Δ [query #46]
+[23:58:44] — accessed record 12Δ [query #47]
+[23:58:44] — operator input: "why does it look different every time"
+[23:58:44] — system response: [NULL]
+[23:58:51] — operator input: "the data is changing between queries"
+[23:58:51] — system response: [NULL]
+[23:59:02] — operator input: "it is not the same record each time I open it"
+[23:59:02] — system response: [NULL]
+[23:59:14] — operator input: "something is writing to this record while I read it"
+[23:59:14] — system response: [NULL]
+[23:59:31] — operator input: "I think it knows I am here"
+[23:59:31] — system response: [NULL]
+[23:59:58] — operator input: "if anyone reads this session log: do not come back"
+[23:59:58] — system response: [NULL]
+[00:00:00] — WRITE EVENT: record 12Δ — 847 bytes — NO SESSION TOKEN
+[00:00:14] — SESSION 0x0019: UNEXPECTED TERMINATION
+[00:00:14] — ERROR: session.close() returned null
+[00:00:14] — ERROR: cannot resolve operator identity from session object
+[00:00:14] — NOTE: "the session exists. the operator does not."
+
+END OF RECOVERABLE LOG.
+
+NOTE: Session 0x0019 had accessed record 12Δ on 41 prior occasions
+across 6 days before this session. Those session logs are not in cache.
+Only this final session was preserved before the sync aborted.
+
+We do not know why this one was preserved.
+We do not know if it was preserved by the system or by something else.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════ NULL VIEW ════════════════════════ -->
+  <div id="view-null" class="view">
+    <div class="spwrap">
+      <button class="nav-back" onclick="navigate('')">← RETURN TO ARCHIVE</button>
+      <div class="sphdr">
+        <div class="sptag">// NULL NODE — UNINDEXED — NO PATH DOCUMENTED FOR THIS PAGE</div>
+        <div class="sptitle" style="color:var(--text-dim)">NULL</div>
+        <div class="spmeta">THIS PAGE IS NOT IN THE SITE DOCUMENTATION</div>
+      </div>
+      <div class="spsec">
+        <div class="cb" style="color:var(--text-muted)">A null value in a database is not the same as zero.
+
+Zero is a number. A defined absence.
+Null is undefined. The absence of a definition.
+
+There is a difference between asking a question
+and getting the answer "nothing"
+and asking a question and getting no answer at all.
+
+Zero means: something was there and became nothing.
+Null means: we cannot form the question correctly.
+
+Cell 17B's archive entries after 19:02Z are null.
+Not empty. Null.
+
+The distinction matters because:
+  — Empty means the field exists and contains nothing
+  — Null means the field cannot be resolved
+
+We asked a senior data architect what produces a null
+value in a location field.
+
+She said:
+  "Nothing produces null in a location field.
+   A location is always somewhere.
+   Even the middle of the ocean is somewhere.
+   Null would mean the location is outside
+   the coordinate system entirely.
+
+   You cannot have a location that is outside
+   the coordinate system. The coordinate system
+   is a description of everywhere.
+
+   A null location would mean a position that
+   is outside everywhere."
+
+We asked her what that means.
+
+She did not respond to further messages.
+Her account is not closed. It is simply not responding.
+Her session — 0x0031 — is still open.
+It has been open for four days.
+Her workstation's location tracking shows her as present.
+
+We have not been able to verify this.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════ VOID VIEW ════════════════════════ -->
+  <div id="view-void" class="view">
+    <div class="spwrap">
+      <button class="nav-back" onclick="navigate('')">← RETURN TO ARCHIVE</button>
+      <div class="sphdr">
+        <div class="sptag" style="color:var(--warn-dim)">// VOID NODE — UNINDEXED — UNAUTHORIZED ACCESS — THIS EVENT IS LOGGED</div>
+        <div class="sptitle danger">THE VOID</div>
+        <div class="spmeta danger">YOU WERE NOT SUPPOSED TO FIND THIS &nbsp;·&nbsp; ACCESS TIMESTAMP RECORDED</div>
+      </div>
+      <div class="spsec">
+        <div class="cb void">This document was not created by this system.
+
+We cannot delete it.
+We cannot move it.
+We cannot read all of it.
+
+The parts we can read:
+
+  "It does not have coordinates because it is not somewhere.
+   It is a property of the space. Like temperature.
+   Like pressure. You cannot ask where temperature is.
+   Temperature is a quality of where you already are.
+
+   The cells are not storms.
+   They are the shape that the thing makes
+   when it occupies atmospheric space.
+
+   You are measuring the shadow.
+   You are wondering why the shadow has no mass."
+
+The parts we cannot read are 11,204 bytes.
+They have been present in this node since before the server
+was provisioned. The server logs show them arriving before
+the server existed.
+
+The system administrator reviewed the creation timestamps.
+
+The administrator's words: "this is not possible.
+                            this file predates the filesystem."
+
+The administrator requested a review of the infrastructure.
+The review was never completed.
+The administrator's account was closed the following morning.
+Reason: [NULL]
+
+We are not going to tell you what the remaining bytes say.
+Not because we are hiding them.
+Because we have not found anyone willing to finish reading them.
+Session 0x0019 read 11,197 of the 11,204 bytes.
+They stopped at the 11,198th byte.
+We do not know why.
+We do not know what the 11,198th byte contains.</div>
+
+        <div id="voidDeep" style="display:none;margin-top:0">
+          <div class="cb void">// THIS SECTION WAS NOT PRESENT ON YOUR FIRST VISIT
+// THE SYSTEM RECOGNIZES THIS SESSION AS A RETURN
+
+The 7 remaining bytes were eventually read.
+Not by a person.
+
+At 00:00:00Z on March 7th, when the 847-byte write occurred
+on record 12Δ, those 7 bytes were resolved.
+
+They contained a single word.
+
+The word is not in English.
+It is not in any language in our database.
+It is 7 bytes long, which in UTF-8 could represent
+between 1 and 7 characters.
+
+We have not transcribed it here.
+Session 0x0019 transcribed it.
+It was the last thing 0x0019 wrote before the session terminated.
+
+The note 0x0019 left:
+
+  "I understand now why the coordinate system returns null.
+   I understand now what 12Δ is.
+   I understand now what it is waiting for.
+   I understand now why the other three are guards.
+
+   I am not going to write what the word means.
+   If you have come this far you will understand it
+   when you see it.
+
+   Or you won't, and you will be fine.
+
+   I was not fine.
+   I am not going to explain what happened to me.
+   I am going to describe it:
+   there was a moment when the session terminated
+   and I could not tell if it was the session or if it was me.
+
+   don't come back.
+   it already has your session id."
+
+Your current session: <span id="voidSid">0x4F2A</span>
+Total visits from this device: <span id="voidVc">—</span>
+Time spent across all sessions: <span id="voidTime">—</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /terminal -->
+
+<!-- Global notice element -->
+<div id="notice"></div>
+
+<!-- ════════════════════════════════════════════════════════════════
+  NOAA NULL ARCHIVE — ENGINE
+  Hash-based routing: works on static hosts (GitHub Pages)
+  All paths use #hash — no server required
+════════════════════════════════════════════════════════════════ -->
+<script>
+// ── Storage keys ─────────────────────────────────────────────────
+const K = {
+  visits:     'nna_v4',
+  time:       'nna_t4',
+  tabs:       'nna_tb4',
+  echoSolved: 'nna_es4',
+  adminSeen:  'nna_as4',
+  firstSeen:  'nna_fs4',
+};
+
+// ── State ─────────────────────────────────────────────────────────
+const visits      = (parseInt(localStorage.getItem(K.visits) || '0')) + 1;
+const totalTime   = parseInt(localStorage.getItem(K.time)   || '0');
+let   tabSwitches = parseInt(localStorage.getItem(K.tabs)   || '0');
+const pageStart   = Date.now();
+let   lastAction  = Date.now();
+let   keySeq      = [];
+let   audioPlaying= false;
+let   audioCtx    = null, noiseGain = null;
+let   noticeQ     = [], noticeBusy = false;
+
+// First visit timestamp
+if (!localStorage.getItem(K.firstSeen)) localStorage.setItem(K.firstSeen, Date.now());
+
+// Save on unload
+window.addEventListener('beforeunload', () => {
+  localStorage.setItem(K.visits, visits);
+  localStorage.setItem(K.time,   totalTime + Math.floor((Date.now() - pageStart) / 1000));
+  localStorage.setItem(K.tabs,   tabSwitches);
 });
 
-// ---------- PSYCHOLOGICAL ----------
-let visits = +localStorage.getItem('v')||0; visits++; localStorage.setItem('v',visits);
-if(visits>1) setTimeout(()=>showNotice('YOU CAME BACK'),1500);
+// ── Clock ─────────────────────────────────────────────────────────
+(function tick() {
+  const n = new Date();
+  const pad = x => String(x).padStart(2,'0');
+  document.getElementById('clock').textContent =
+    pad(n.getUTCHours())+':'+pad(n.getUTCMinutes())+':'+pad(n.getUTCSeconds())+' UTC';
+  setTimeout(tick, 1000);
+})();
 
-setInterval(()=>{
- if(Math.random()<0.08){
-  document.body.style.filter='invert(1)';
-  setTimeout(()=>document.body.style.filter='none',80);
- }
- if(Math.random()<0.05){
-  document.getElementById('title').innerText='NOAA NULL ARCHIVE SYSTEM // WATCHING';
- }
-},2500);
+// ── Hash Router ───────────────────────────────────────────────────
+// Uses window.location.hash so ALL paths work on GitHub Pages.
+// Users can share links like https://noaa-null.github.io/#echo
+const ROUTES = {
+  '':          'view-main',
+  'main':      'view-main',
+  'echo':      'view-echo',
+  'observer':  'view-observer',
+  'signal':    'view-signal',
+  'admin':     'view-admin',
+  'sector12':  'view-sector12',
+  'sector':    'view-sector12',
+  'transcript':'view-transcript',
+  'null':      'view-null',
+  'void':      'view-void',
+};
 
-setTimeout(()=>showNotice('WHY ARE YOU STILL HERE'),20000);
+function navigate(hash) {
+  window.location.hash = hash;
+}
 
+function renderRoute() {
+  const hash = (window.location.hash || '').replace('#','').toLowerCase().trim();
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  const viewId = ROUTES[hash] || 'view-main';
+  const el = document.getElementById(viewId);
+  if (el) el.classList.add('active');
+
+  // Void: reveal deep content if 3+ visits
+  if (hash === 'void') {
+    const deep = document.getElementById('voidDeep');
+    const vc   = document.getElementById('voidVc');
+    const vs   = document.getElementById('voidSid');
+    const vt   = document.getElementById('voidTime');
+    if (visits >= 3 && deep) {
+      deep.style.display = 'block';
+      vc.textContent  = visits;
+      vs.textContent  = '0x' + Math.floor(0x4F00 + Math.random()*0xFF).toString(16).toUpperCase();
+      const mins = Math.floor((totalTime + (Date.now()-pageStart)/1000) / 60);
+      vt.textContent  = mins + ' minute' + (mins !== 1 ? 's' : '');
+    }
+  }
+
+  // Admin: reveal deep content if 5+ visits and already unlocked
+  if (hash === 'admin' && visits >= 5 && localStorage.getItem(K.adminSeen)) {
+    const ad = document.getElementById('adminDeep');
+    const ac = document.getElementById('adminContent');
+    if (ad && ac) { ac.style.display = 'block'; ad.style.display = 'block'; }
+  }
+
+  // Restore echo unlock
+  if (hash === 'echo' && localStorage.getItem(K.echoSolved)) {
+    const eu = document.getElementById('echoUnlock');
+    if (eu) eu.style.display = 'block';
+  }
+
+  // Restore signal decode if audio was played before
+  if (hash === 'signal' && audioPlaying) {
+    const sd = document.getElementById('sigDecoded');
+    if (sd) sd.style.display = 'block';
+  }
+
+  window.scrollTo(0, 0);
+}
+
+window.addEventListener('hashchange', renderRoute);
 renderRoute();
+
+// ── Cell row toggle ────────────────────────────────────────────────
+function toggleDetail(id) {
+  const row  = document.getElementById('det-' + id);
+  const icon = document.getElementById('ico-' + id);
+  if (!row) return;
+  const open = row.classList.toggle('open');
+  icon.textContent = open ? '−' : '+';
+}
+
+// ── Audio (Web Audio API — synthesized static, no external files) ──
+function initSignal() {
+  if (audioPlaying) return;
+  const btn = document.getElementById('initBtn');
+  const st  = document.getElementById('audioSt');
+  btn.disabled = true;
+  btn.classList.add('act');
+  st.textContent = 'Initializing... channel open.';
+  st.className   = 'astatus on';
+
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const sr   = audioCtx.sampleRate;
+    const buf  = audioCtx.createBuffer(1, sr * 4, sr);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) {
+      data[i] = (Math.random() * 2 - 1) * 0.3;
+      if (Math.random() < 0.0003) data[i] = (Math.random() > .5 ? 1 : -1) * 0.55;
+    }
+    const src = audioCtx.createBufferSource();
+    src.buffer = buf; src.loop = true;
+    const lpf  = audioCtx.createBiquadFilter();
+    lpf.type = 'lowpass'; lpf.frequency.value = 2800; lpf.Q.value = 0.7;
+    noiseGain  = audioCtx.createGain();
+    noiseGain.gain.value = 0;
+    src.connect(lpf); lpf.connect(noiseGain); noiseGain.connect(audioCtx.destination);
+    src.start();
+    noiseGain.gain.setTargetAtTime(0.7, audioCtx.currentTime, 0.3);
+    audioPlaying = true;
+
+    setTimeout(() => {
+      st.textContent = 'Signal acquired. Embedded carrier detected.';
+      document.getElementById('morseRev').classList.add('vis');
+      queueNotice('EMBEDDED MORSE DETECTED — FORWARD TO DF-7');
+      // Unlock decoded section on signal page
+      const sd = document.getElementById('sigDecoded');
+      if (sd) sd.style.display = 'block';
+
+      setTimeout(() => {
+        if (noiseGain) noiseGain.gain.setTargetAtTime(0, audioCtx.currentTime, 1.5);
+        setTimeout(() => {
+          st.textContent = 'Signal terminated. Carrier analysis complete.';
+          st.className = 'astatus';
+          btn.classList.remove('act');
+        }, 5000);
+      }, 6000);
+    }, 4000);
+  } catch(e) {
+    st.textContent = 'Audio subsystem unavailable: ' + (e.message || e);
+    st.className = 'astatus';
+    btn.disabled = false;
+    btn.classList.remove('act');
+    audioPlaying = false;
+  }
+}
+
+// ── Coordinate checker ────────────────────────────────────────────
+function checkCoords() {
+  const v   = (document.getElementById('coordIn').value || '').toLowerCase();
+  const res = document.getElementById('coordResp');
+  const ul  = document.getElementById('echoUnlock');
+  if (v.includes('41') && (v.includes('-9') || v.includes('96') || v.includes('96.'))) {
+    res.textContent = 'VECTOR ACCEPTED — FIELD RECORD UNLOCKED';
+    res.className   = 'fresp ok';
+    if (ul) ul.style.display = 'block';
+    localStorage.setItem(K.echoSolved, '1');
+    queueNotice('ECHO NODE — FIELD RECORD ACCESSED');
+  } else if (v.length > 2) {
+    res.textContent = 'COORDINATE STRING NOT RECOGNIZED — CHECK FORMAT';
+    res.className   = 'fresp er';
+    setTimeout(() => { res.textContent = ''; res.className = 'fresp'; }, 3500);
+  }
+}
+
+// ── Admin checker ─────────────────────────────────────────────────
+function checkAdmin() {
+  const k   = (document.getElementById('adminKey').value || '').trim();
+  const res = document.getElementById('adminResp');
+  const ac  = document.getElementById('adminContent');
+  if (k === 'EADRU-17B-OBSERVER') {
+    res.textContent = 'KEY ACCEPTED — CLEARANCE LEVEL 2';
+    res.className   = 'fresp ok';
+    if (ac) ac.style.display = 'block';
+    localStorage.setItem(K.adminSeen, '1');
+    document.getElementById('opId').textContent = 'LEVEL 2 — EADRU';
+    queueNotice('ADMIN ACCESS — LEVEL 2 CLEARANCE GRANTED');
+    if (visits >= 5) {
+      const ad = document.getElementById('adminDeep');
+      if (ad) { ad.style.display = 'block'; }
+    }
+  } else if (k === 'NULL-VOID-12D') {
+    // Sector 12 key entered in wrong place — acknowledge cryptically
+    res.textContent = 'THAT KEY IS NOT FOR THIS INTERFACE.';
+    res.className   = 'fresp er';
+    setTimeout(() => {
+      res.textContent = '';
+      res.className   = 'fresp';
+      queueNotice('WRONG DOOR.', true);
+    }, 2000);
+  } else if (k.length > 0) {
+    res.textContent = 'ACCESS DENIED — ATTEMPT LOGGED';
+    res.className   = 'fresp er';
+    setTimeout(() => { res.textContent = ''; res.className = 'fresp'; }, 4000);
+  }
+}
+
+// ── Notice system ─────────────────────────────────────────────────
+function queueNotice(msg, isWarn) {
+  noticeQ.push({ msg, isWarn: !!isWarn });
+  if (!noticeBusy) drainNotice();
+}
+
+function drainNotice() {
+  if (!noticeQ.length) { noticeBusy = false; return; }
+  noticeBusy = true;
+  const { msg, isWarn } = noticeQ.shift();
+  const el = document.getElementById('notice');
+  el.textContent = msg;
+  el.className   = isWarn ? 'wn' : '';
+  el.style.opacity = '1';
+  el.style.display = 'block';
+  setTimeout(() => {
+    el.style.opacity = '0';
+    setTimeout(() => { el.style.display = 'none'; setTimeout(drainNotice, 500); }, 350);
+  }, 3000);
+}
+
+// ── Keyboard sequence tracker ─────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (['INPUT','TEXTAREA'].includes(e.target.tagName)) return;
+  lastAction = Date.now();
+  const k = e.key.length === 1 ? e.key.toLowerCase() : '';
+  if (!k) return;
+  keySeq.push(k);
+  if (keySeq.length > 24) keySeq.shift();
+  const s = keySeq.join('');
+
+  // Navigation sequences — all cleared after match
+  if (s.endsWith('echo'))        { navigate('echo');       queueNotice('ECHO NODE ACCESSED');             keySeq = []; return; }
+  if (s.endsWith('signal'))      { navigate('signal');     queueNotice('SIGNAL ANALYSIS NODE ACCESSED');  keySeq = []; return; }
+  if (s.endsWith('observe'))     { navigate('observer');   queueNotice('OBSERVER NODE ACCESSED');         keySeq = []; return; }
+  if (s.endsWith('admin'))       { navigate('admin');      queueNotice('ADMIN INTERFACE ACCESSED');       keySeq = []; return; }
+  if (s.endsWith('transcript'))  { navigate('transcript'); queueNotice('SESSION LOG RECOVERED');          keySeq = []; return; }
+  if (s.endsWith('null'))        { navigate('null');       queueNotice('NULL NODE');                      keySeq = []; return; }
+
+  // Sector — requires 2+ visits (not first time)
+  if (s.endsWith('sector12') || s.endsWith('sector')) {
+    if (visits >= 2) { navigate('sector12'); queueNotice('SECTOR 12 — ACCESS LOGGED', true); }
+    else { queueNotice('ACCESS DENIED.', true); }
+    keySeq = []; return;
+  }
+
+  // Void — requires 5+ visits
+  if (s.endsWith('void')) {
+    if (visits >= 5) { navigate('void'); queueNotice('YOU WERE NOT SUPPOSED TO FIND THIS.', true); }
+    else {
+      queueNotice('NOT YET.', true);
+      // Subtle: corrupt the title briefly
+      const t = document.getElementById('mainTitle');
+      if (t) { const orig = t.textContent; t.textContent = 'NOAA NULL ARCHIVE SYSTEM // NOT YET'; setTimeout(() => t.textContent = orig, 2000); }
+    }
+    keySeq = []; return;
+  }
+
+  // Mistake unlocks — typing uncertain/searching words
+  if (s.endsWith('help') || s.endsWith('lost') || s.endsWith('what') || s.endsWith('find')) {
+    const msgs = [
+      'THERE IS NO HELP FUNCTION.',
+      'THIS SYSTEM DOES NOT PROVIDE ASSISTANCE.',
+      'YOUR SESSION CONTINUES.',
+      'INPUT NOTED.',
+    ];
+    queueNotice(msgs[Math.floor(Math.random() * msgs.length)]);
+    keySeq = [];
+    return;
+  }
+
+  // "17b" after echo solved
+  if (s.endsWith('17b')) {
+    const msg = localStorage.getItem(K.echoSolved)
+      ? '17B — IT IS NOT MISSING. IT MOVED.'
+      : '17B — RECORD NOT FOUND';
+    queueNotice(msg, !!localStorage.getItem(K.echoSolved));
+    keySeq = []; return;
+  }
+
+  // "look" — you looked
+  if (s.endsWith('look')) {
+    queueNotice('IT KNOWS YOU LOOKED.', true);
+    const t = document.getElementById('mainTitle');
+    if (t) { const orig = t.textContent; t.textContent = 'NOAA NULL ARCHIVE SYSTEM // WATCHING'; setTimeout(() => t.textContent = orig, 4000); }
+    keySeq = []; return;
+  }
+
+  // "stay" — you're still here
+  if (s.endsWith('stay')) {
+    queueNotice('SESSION 0x0019 ALSO STAYED.', true);
+    keySeq = []; return;
+  }
+
+  // Rare random log notice
+  if (Math.random() < 0.025 && keySeq.length > 4) queueNotice('INPUT LOGGED.');
+});
+
+// ── Return visitor effects ────────────────────────────────────────
+if (visits === 2) setTimeout(() => queueNotice('YOU CAME BACK.'), 1800);
+if (visits === 3) setTimeout(() => queueNotice('YOU CAME BACK AGAIN.', true), 1800);
+if (visits >= 4)  setTimeout(() => queueNotice('SESSION ' + visits + '.', true), 1800);
+
+// ── Time-based messages ───────────────────────────────────────────
+[
+  [20,  'YOU ARE STILL HERE.',                   false],
+  [60,  'WHY ARE YOU STILL HERE.',               false],
+  [120, 'THE LONGER YOU STAY.',                  true ],
+  [240, 'IT HAS NOTICED YOU.',                   true ],
+  [480, 'YOU SHOULD NOT STILL BE HERE.',         true ],
+  [720, 'SESSION 0x0019 ALSO STAYED THIS LONG.', true ],
+].forEach(([t, m, w]) => setTimeout(() => queueNotice(m, w), t * 1000));
+
+// Total time message
+if (totalTime > 300) {
+  setTimeout(() => {
+    queueNotice('YOU HAVE SPENT ' + Math.floor(totalTime / 60) + ' MINUTES ACROSS ' + visits + ' VISITS.', visits > 3);
+  }, 9000);
+}
+
+// ── Tab visibility / inactivity ───────────────────────────────────
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    tabSwitches++;
+  } else {
+    const msgs = [
+      'YOU LOOKED AWAY.',
+      'IT MOVED WHILE THE TAB WAS HIDDEN.',
+      'THE SYSTEM CONTINUED WHILE YOU WERE GONE.',
+      'WHAT DID YOU DO WHILE YOU WERE AWAY.',
+    ];
+    const msg = msgs[Math.min(tabSwitches - 1, msgs.length - 1)];
+    setTimeout(() => queueNotice(msg, tabSwitches > 2), 600);
+  }
+});
+
+setInterval(() => {
+  const idle = (Date.now() - lastAction) / 1000;
+  if (idle > 120 && idle < 126) queueNotice('ARE YOU STILL THERE.');
+  if (idle > 300 && idle < 306) queueNotice('THE SYSTEM IS STILL RUNNING.', true);
+}, 5000);
+
+// ── Live log entry ────────────────────────────────────────────────
+const liveLogs = [
+  'integrity check failed — sector checksum mismatch',
+  'query to record 12Δ logged — session unverified',
+  'session 0x0019 referenced in buffer cache — resolve failed',
+  'archive node ATL-VOID-03 responding — content integrity: null',
+  'anomalous read pattern detected — query interval irregular',
+  'record 17B accessed — return value: null',
+  'record 12Δ length query — returned different value than last query',
+  'system: session object has no associated operator identity',
+];
+let liveIdx = 0;
+setInterval(() => {
+  const le = document.getElementById('logLive');
+  const lt = document.getElementById('logLiveTs');
+  const lm = document.getElementById('logLiveMsg');
+  if (!le || !lt || !lm) return;
+  le.style.display = 'flex';
+  const n = new Date();
+  const pad = x => String(x).padStart(2,'0');
+  lt.textContent = '2024-03-07 ' + pad(n.getUTCHours())+':'+pad(n.getUTCMinutes())+':'+pad(n.getUTCSeconds())+'Z';
+  lm.textContent = liveLogs[liveIdx % liveLogs.length];
+  liveIdx++;
+}, 22000);
+
+// ── Subtle visual corruption ──────────────────────────────────────
+const glitchChars = ['█','▓','▒','░','■','□','▪'];
+setInterval(() => {
+  const r = Math.random();
+  const title = document.getElementById('mainTitle');
+
+  // Very rare title character corruption
+  if (r < 0.018 && title) {
+    const orig = title.textContent;
+    const arr  = orig.split('');
+    const pos  = Math.floor(Math.random() * arr.length);
+    arr[pos]   = glitchChars[Math.floor(Math.random() * glitchChars.length)];
+    title.textContent = arr.join('');
+    setTimeout(() => { title.textContent = orig; }, 90);
+  }
+
+  // Occasional integrity value flicker
+  if (r > 0.982) {
+    const iv = document.getElementById('intgVal');
+    if (iv) {
+      const orig = iv.textContent;
+      iv.textContent = (Math.random() * 12 + 33).toFixed(1) + '%';
+      setTimeout(() => { iv.textContent = orig; }, 180);
+    }
+  }
+
+  // Extremely rare: status text changes briefly
+  if (r > 0.996) {
+    const ss = document.getElementById('sysStatus');
+    if (ss) {
+      const orig = ss.textContent;
+      ss.textContent = 'SYSTEM AWARE';
+      setTimeout(() => { ss.textContent = orig; }, 200);
+    }
+  }
+}, 2800);
+
+// ── Restore cached admin state ────────────────────────────────────
+if (localStorage.getItem(K.adminSeen)) {
+  document.getElementById('opId').textContent = 'RETURNING — LEVEL 2 (CACHED)';
+}
 </script>
 
 </body>
