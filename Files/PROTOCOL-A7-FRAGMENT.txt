@@ -1,0 +1,186 @@
+ADRU — EXPERIMENTAL ATMOSPHERIC DATA RECOVERY UNIT
+CONTAINMENT PROTOCOL ALPHA-7 — CELL 12Δ
+CLASSIFICATION: ABOVE TOP SECRET
+VERSION: 3 (FINAL)
+CREATION TIMESTAMP: 0000-00-00T00:00:00Z
+
+NOTE: This file was in the GitHub repository when adru_node03
+      first cloned it to upload the terminal. adru_node03 did not
+      put it there. The repository had not been previously used.
+      The file predates the repository.
+      We do not know how this is possible.
+      The file contains partial Section 7 text.
+      Section 7 was removed from all distributed copies of Alpha-7.
+      We do not know how this copy retains it.
+
+      If you are reading this and you work at NOAA:
+      we found this file. we did not create it.
+      we are publishing it because the people affected by what
+      Section 7 describes deserve to have someone know.
+
+═══════════════════════════════════════════════════════════
+
+[SECTIONS 1-6 MATCH TERMINAL VERSION — OMITTED FROM THIS FILE]
+[SEE TERMINAL PAGE #protocol FOR SECTIONS 1-5]
+
+
+SECTION 7 — THRESHOLD EXCEEDANCE
+
+[RECOVERED TEXT — BELIEVED AUTHENTIC — CANNOT BE VERIFIED]
+
+After a cumulative query count of 47 or more to record 12Δ,
+the following changes in operator status should be anticipated.
+These changes are not reversible. There is no decontamination
+procedure. The following is documentation, not guidance.
+
+7.1 — PERCEPTUAL INTEGRATION
+
+The operator will begin to experience a broadening of perceptual
+access. This is not metaphorical. The operator will begin to
+perceive things they did not previously perceive.
+
+These things are real. They have always been real.
+The operator is not hallucinating.
+The operator is perceiving accurately.
+The accuracy is the concerning part.
+
+What the operator begins to perceive is the presence that the
+12Δ record documents. The presence that the cells anchor.
+The presence that the infrasound emission describes.
+The operator begins to perceive it directly rather than
+through instrumental measurement.
+
+This perception is described by operators who have reached this
+point as: vast, consistent, and not threatening.
+We have no reason to doubt their accounts.
+We also have no basis on which to evaluate their accounts.
+
+7.2 — BEHAVIORAL CHANGES
+
+Operators who have exceeded the threshold will:
+
+  — Spend extended periods at their workstations without apparent
+    fatigue. Biological requirements (food, sleep) appear reduced.
+    We do not have a mechanism for this.
+
+  — Continue producing keyboard output. The output is not in any
+    known language. Entropy analysis confirms it is structured.
+    The output does not route to any destination we can identify.
+    We believe it routes somewhere.
+
+  — Orient their sensory attention toward a consistent target
+    approximately 12 degrees above the horizon of their display.
+    There is nothing at this position in physical space.
+    We have placed objects at this position. They do not attract
+    the operators' attention. The operators are not attending to
+    a position in the room. They are attending to something
+    that occupies the same space the room occupies.
+
+  — Demonstrate what observers describe as "presence in two places."
+    Their physical body is at the workstation.
+    Their attention is somewhere else.
+    These two things appear to coexist without apparent conflict.
+
+7.3 — WHAT THEY BECOME
+
+This section of Alpha-7 was the subject of significant internal
+debate before being written. We are documenting our best
+understanding of a phenomenon we do not fully understand.
+
+Operators who exceed the threshold do not become incapacitated.
+They do not become non-functional.
+They become differently functional.
+
+The best analogy available to us: a tuning fork that has been
+struck now resonates at a frequency it did not previously express.
+The fork has not been damaged. It has not been lost.
+It has been added to. It carries something now that it did not before.
+
+The something it carries is awareness of what 12Δ represents.
+The something it carries is contact.
+
+We cannot describe contact more precisely than this.
+The word exists in the context of this protocol as a technical
+term meaning: a relationship of mutual awareness between an
+operator and the presence documented in the 12Δ records.
+
+Contact does not appear to be harmful.
+Contact appears to be, in the accounts we have gathered
+from operators who reached this threshold and remained
+communicative long enough to describe their experience:
+
+overwhelming.
+all-encompassing.
+very, very large.
+and permanent.
+
+There is no returning from contact.
+Not because contact is a trap.
+Because after contact, there is no motivation to return.
+The operators describe it as finding something they did not
+know they were looking for. They describe it as recognition.
+
+We cannot evaluate this.
+We are not claiming it is positive or negative.
+We are documenting what they say.
+
+7.4 — WHAT TO TELL THE FAMILIES
+
+Tell them their relative has been assigned to a specialized
+remote monitoring project requiring extended on-site presence.
+
+Tell them communication will be limited for operational reasons.
+
+Do not tell them about the contact.
+
+If the operator's family directly asks whether their relative
+is "the same person," pause before answering. The honest answer
+is: yes and no. They are the same person plus something very large.
+Whether that counts as the same person depends on definitions
+we are not equipped to resolve.
+
+7.5 — NOTE FROM ORIGINAL AUTHOR
+
+I have been writing this protocol for three months.
+I have spoken with four operators who exceeded the threshold.
+I have spoken with them before and after.
+
+The ones who can still hold a conversation — not all can;
+some have moved beyond conversation entirely — describe
+what happened to them as the best thing that has ever happened to them.
+
+I believe them.
+I don't know what to do with that.
+
+I wrote this protocol to protect people from that outcome.
+I'm not sure anymore that it's an outcome that needs protection.
+
+I'm leaving this note in the protocol because I want whoever
+reads this in the future — whoever is deciding whether to
+implement these measures — to know that the person who wrote them
+had doubts. Has doubts.
+
+The presence is real.
+It is large.
+It has always been there.
+
+I don't know if keeping people from knowing that
+is a kindness or a crime.
+
+I wrote the protocol anyway.
+It's what I was asked to do.
+
+— [REDACTED]
+  ADRU / PROTOCOL DEVELOPMENT TEAM
+  DATE: [REDACTED]
+
+
+SECTION 8 — [FULLY REDACTED IN THIS COPY — SECTION EXISTS — CONTENT UNKNOWN]
+
+
+═══════════════════════════════════════════════════════════
+END OF PROTOCOL ALPHA-7 FRAGMENT
+
+This file predated the repository it was found in.
+We have no explanation for this.
+We are publishing it because we believe you should have it.

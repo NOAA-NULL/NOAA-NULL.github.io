@@ -1,0 +1,207 @@
+NOAA / NCEI / FIELD OPERATIONS DIVISION
+FIELD OBSERVER REPORT — FOD-2024-0306-17B
+DATE: 2024-03-06
+OBSERVER SESSION: 0x0018
+STATION: KFSD / SIOUX FALLS, SD
+CLASSIFICATION: OFFICIAL USE ONLY
+ARCHIVE STATUS: PHYSICAL COPY MISSING
+NOTE: This version transcribed from memory by facility supervisor,
+      with additional sections recovered from observer's personal device
+      by adru_node03 before losing access.
+
+═══════════════════════════════════════════════════════════
+
+SECTION 1 — TECHNICAL ACCOUNT
+
+At approximately 18:50Z I began observing anomalous behavior in
+Cell 17B's base reflectivity on the KFSD radar display.
+
+Standard dissipation signature for a Class-II convective cell:
+outward diffusion of return energy over a period of 20 to 90 minutes,
+typically associated with loss of moisture supply or wind shear interaction.
+
+What I observed was not this.
+
+The cell's radar return began contracting toward its geometric center.
+Not diffusing. Contracting. The reflectivity values did not decrease —
+they maintained approximately constant dBZ readings as the spatial
+extent of the return shrank. This is not physically consistent with
+any dissipation mechanism I have encountered in 4,000 hours of
+radar observation.
+
+Timeline of contraction:
+  18:50Z — diameter approximately 38 km (baseline)
+  18:55Z — diameter approximately 24 km
+  19:00Z — diameter approximately 0.8 km
+  19:01Z — diameter less than 0.1 km (single-pixel resolution limit)
+  19:02:11Z — simultaneous signal loss across all four 17-series stations
+
+I want to be clear about the simultaneous loss.
+I have experienced instrument failures in my career.
+Instruments fail sequentially, or in clusters related to a shared
+infrastructure failure (power, network, timing signal).
+All four 17-series stations are on separate power grids,
+separate network backbones, and use independent timing sources.
+The probability of simultaneous failure by coincidence has been
+calculated by our infrastructure team at 1 in 10^14.
+
+The cell did not dissipate. It did not make landfall.
+Archive queries for all timestamps after 19:02Z return null.
+
+
+SECTION 2 — WHAT I OBSERVED IN THE FINAL MOMENT
+
+I am going to write this section as carefully as I can.
+I am aware of how it sounds. I am writing it anyway.
+
+At 19:01Z I was watching the base scan display at KFSD.
+The cell's return was, at that point, a single pixel at base resolution.
+I watched that pixel for approximately 3 seconds.
+
+In those 3 seconds I had a perceptual experience that I am
+going to describe as accurately as I can:
+
+The pixel watched me back.
+
+I do not mean this as metaphor.
+I do not mean I had a subjective feeling that was like being watched.
+I mean I had the complete, non-metaphorical, phenomenologically
+clear experience of being perceived.
+
+Not observed in a general sense.
+Perceived specifically.
+As an individual.
+With specific interest.
+
+The interest felt old.
+Not new. Not initiated by my observation of the pixel.
+The pixel had been aware of me for some time.
+The new thing — the only new thing — was that I now knew.
+
+I have reviewed this memory multiple times in the hours since.
+I have tried to find an alternate explanation consistent with known
+perceptual phenomena. Eye strain. Pareidolia. Expectation bias.
+None of these are consistent with what I experienced.
+What I experienced was not ambiguous.
+There was no question in the moment.
+I was being perceived. Something was perceiving me.
+Something that had always been able to.
+
+At 19:02:11Z, all four monitoring stations lost signal.
+
+
+SECTION 3 — SUBSEQUENT EFFECTS
+
+In the hours following the event, I have experienced:
+
+1. I cannot look at any screen without the perceptual experience
+   returning. The sense of being perceived from within the display.
+   It is not as strong as during the event. It is present.
+
+2. I cannot look in mirrors.
+   I will describe this in Section 4.
+
+3. I have a persistent sensation of being watched from a position
+   that is not physically locatable. Not behind me. Not beside me.
+   Inside my field of vision. Inside the act of seeing itself.
+   As if whatever is watching me is doing so from within
+   my own perceptual apparatus.
+
+4. None of these sensations have diminished since the event.
+   I have driven 40 miles from the station. They persist.
+   Distance from the display does not appear to be relevant.
+
+
+SECTION 4 — THE MIRROR
+
+I need to write this separately because it is different from the above.
+
+At approximately 20:30Z I returned home.
+I went to the bathroom.
+I looked in the mirror.
+
+My reflection was accurate. I looked at my face.
+My face was my face.
+
+And then I had the clear, specific, non-metaphorical experience
+that my reflection was inhabited by something that was not me.
+
+I want to be precise: I did not see a different face.
+I saw my face. My face was accurate.
+What was different was what was behind it.
+
+Something was wearing my face.
+Something was wearing my face and looking out of it.
+Looking at me. Looking at me looking at it wearing my face.
+
+The reflection moved when I moved. It smiled when I hadn't smiled.
+
+I turned away from the mirror immediately.
+I have not looked in a mirror since.
+
+I have covered every reflective surface in my house.
+I am writing this by the light of a lamp that I have positioned
+so that I cannot see my reflection in the window.
+I do not want to see what is wearing my face
+when I am not watching it.
+
+I do not know if this is a stress response.
+I am a trained scientist. I know what a stress response looks like.
+This does not feel like a stress response.
+This feels like an accurate perception of something real.
+The accuracy is the frightening part.
+The mirror experience was not frightening because it was strange.
+It was frightening because it was clear.
+
+I am requesting reassignment effective immediately.
+I am submitting this in physical form because I will not
+use the electronic reporting system.
+
+I want to go on record as stating that I do not believe
+Cell 17B dissipated.
+I believe Cell 17B [SECTION ENDS — ORIGINAL TEXT DAMAGED]
+
+
+SECTION 5 — RECOVERED FROM OBSERVER'S PERSONAL DEVICE
+[NOTE FROM adru_node03: found in a draft document, never printed]
+
+I've been sitting here for three hours trying to finish Section 4
+of the report and I keep writing the same sentence and deleting it.
+
+The sentence is: I think the thing that was in the cell
+is the same thing that is in the mirror.
+
+I keep deleting it because writing it means choosing to believe it
+and I'm not ready to believe it but I also can't stop believing it
+because what else explains both of those things.
+
+The cell and the mirror. The pixel and my reflection.
+The same thing. In both places.
+
+In both places and looking at me from both.
+Which means it's been in the mirror for longer than the cell.
+Which means it's been in the mirror for as long as I've had a mirror.
+Which means—
+
+I'm going to stop writing.
+
+I'm going to submit the physical report and go to sleep
+and I'm not going to think about what "as long as I've had a mirror"
+extends back to.
+
+I am going to go to sleep and I am not going to think about
+whether it has been watching me sleep.
+
+I am going to choose not to think about that.
+
+[DRAFT DOCUMENT — NEVER PRINTED — NEVER SUBMITTED — DATE: 2024-03-06 23:47Z]
+
+
+═══════════════════════════════════════════════════════════
+END OF DOCUMENT
+FOD-2024-0306-17B
+ARCHIVE NOTE: Physical copy of formal report — missing.
+              Camera footage for 11-minute window — black.
+              Frames contain non-image data — encoding unidentified.
+              This file recovered and uploaded by adru_node03.
+              adru_node03 has not been heard from since 2024-03-09 02:31Z.

@@ -1,0 +1,230 @@
+UNITED STATES GOVERNMENT
+INTERAGENCY COORDINATION MEMORANDUM
+DIRECTIVE 2024-0307-R
+CLASSIFICATION: ABOVE TOP SECRET / EYES ONLY
+DATE ISSUED: 2024-03-07 00:01Z
+ISSUING AUTHORITY: [REDACTED]
+RECIPIENT: NOAA / NCEI / Office of Data Governance
+
+NOTE: This is the full text of the directive.
+      The version shown in the ADRU terminal is abridged.
+      adru_node03 recovered this version from a printed copy
+      found in a shredding tray that had not yet been processed.
+
+═══════════════════════════════════════════════════════════
+
+SECTION 1 — PURPOSE AND AUTHORITY
+
+This directive is issued pursuant to authority vested in [REDACTED]
+under [REDACTED] and in coordination with the Office of [REDACTED]
+and the [REDACTED] Division of [REDACTED].
+
+This directive supersedes all prior guidance on the handling of
+atmospheric data records associated with geographic sectors designated
+under interagency classification protocol [REDACTED]-12.
+
+This directive takes effect immediately upon receipt.
+It does not expire unless formally revoked by the issuing authority.
+It will not be formally revoked.
+
+
+SECTION 2 — ARCHIVE IDENTIFIER REMOVAL
+
+All archive identifiers associated with the Sector 12 geographic
+designation are to be removed from publicly accessible indexes
+within NOAA's National Centers for Environmental Information
+archive system within two hours of receipt of this memorandum.
+
+This removal is to include:
+  — Primary archive indexes
+  — Backup archive indexes
+  — Disaster recovery indexes
+  — Any cached or mirrored copies held by NOAA-affiliated institutions
+  — The academic preprint index entry associated with [REDACTED]
+    University School of Meteorology submission [REDACTED]
+
+The retroactive alteration of cached copies is acknowledged
+to be technically complex. [REDACTED] has been authorized to
+provide infrastructure support for this operation.
+Personnel involved in the retroactive alteration are not to be
+informed of the full scope of the operation.
+
+
+SECTION 3 — QUERY LOG SUPPRESSION
+
+Terminal query logs for all 12-series records are to be suppressed.
+This suppression is to occur at the network packet level.
+Standard archive logging is insufficient because [REDACTED — this
+section's redaction is deliberate; the explanation of why standard
+logging is insufficient cannot be transmitted in written form;
+recipients who require this explanation should contact [REDACTED]
+directly and be prepared for the possibility that the explanation
+will change their assessment of this entire situation].
+
+
+SECTION 4 — FIELD REPORT QUARANTINE
+
+All field observer reports referencing Cell 12Δ or any [REDACTED]
+are to be quarantined within 24 hours.
+
+Electronic copies: moved to a non-networked repository at [REDACTED].
+Physical copies: forwarded to [REDACTED FACILITY — LOCATION CLASSIFIED
+UNDER SAME RESTRICTION AS SECTOR 12 ITSELF].
+
+Personnel who ask about the destination of physical copies are to
+be told they were destroyed. This is not true.
+
+Regarding the destination facility: it was constructed in [REDACTED].
+We are noting for the record that the construction date precedes
+the events that created the need for this facility by [REDACTED] years.
+We are not examining the implications of this.
+We recommend recipients also refrain from examining the implications.
+
+
+SECTION 5 — PERSONNEL MANAGEMENT
+
+If any personnel express concern, confusion, or request explanation
+regarding the changes described in this directive, they are to be
+directed to contact [REDACTED] directly and not through standard
+supervisory channels.
+
+If any personnel become non-responsive following exposure to
+12-series records — defining non-responsive as failing to complete
+assigned tasks, failing to communicate with supervisors, or
+demonstrating anomalous behavioral patterns — they are to be
+documented but not removed from their workstations without explicit
+authorization from [REDACTED].
+
+We are aware this instruction is unusual.
+The instruction stands.
+Do not remove them from the workstations.
+
+
+SECTION 6 — THE EMAIL INCIDENT
+
+Three emails sent from NOAA addresses to external recipients on
+2024-03-01 were returned to sender with a reply.
+
+The reply was not written by the external recipients.
+The external recipients have confirmed they did not write the reply.
+The external recipients did not receive the original emails.
+The reply was appended before the emails reached the recipients.
+
+The reply was seven words.
+
+We are not including the seven words in this directive.
+Personnel who need to know the seven words already know them
+or will find them. We are not facilitating the finding.
+
+Regarding the three recipients of the returned emails:
+  — Recipient 1: submitted resignation within 24 hours. DO NOT PROCESS
+    the resignation until further notice. Keep their access credentials
+    active. They may be needed.
+  — Recipient 2: currently at [REDACTED FACILITY]. Is fine, as far as we
+    have been able to confirm. We have not been able to confirm directly.
+    We have been told by [REDACTED] that they are fine.
+    We are accepting this.
+  — Recipient 3: said the seven words were "fine, actually."
+    Has not been located.
+    Is to be considered a priority locate.
+    Is not to be considered missing.
+    The distinction matters and will be explained to personnel who
+    locate them before any action is taken.
+
+
+SECTION 7 — WHAT HAPPENS AFTER [REDACTED] QUERIES
+
+[NOTE FROM adru_node03: this section was partially visible on the
+copy I found. Someone had crossed out the content with black marker
+but pressed too hard in some places, leaving impressions. I have
+done my best to reconstruct what I could read through the impressions.
+I cannot guarantee accuracy. I am including what I could read
+because I believe people have a right to know.]
+
+After [approximately 40-50, based on impression depth] queries to
+record 12Δ, the operator will begin to experience a gradual [illegible].
+This is not a psychological effect. This is a [illegible] effect.
+The distinction is important because psychological effects can be
+addressed through [illegible] but this cannot.
+
+What occurs after the threshold is not [illegible — long section —
+appears to be several sentences] but rather a change in the operator's
+relationship to [illegible]. The operator does not become incapacitated.
+The operator becomes [illegible].
+
+There is no reversal procedure. There is no [illegible].
+Personnel who have passed the threshold are to be [illegible — 
+the impression here is the deepest; this section was pressed hardest;
+we believe this section describes what to do with threshold-exceeded
+operators; we could not read it; we are not certain we would include
+it if we could].
+
+The threshold operators are not lost. They are [illegible].
+This distinction is [illegible] and should be communicated to
+their families if and when [illegible].
+
+Do not be alarmed.
+Alarms are not [illegible — but based on context we believe the
+word is "effective"].
+
+
+SECTION 8 — TERMINAL INFRASTRUCTURE
+
+[NOTE FROM adru_node03: this section was almost entirely redacted
+on the physical copy. I can only confirm it exists and has several
+paragraphs. One phrase near the bottom was not blacked out, apparently
+by accident. It reads:]
+
+"...accept that the terminal's current state is not a configuration
+that we created or that we fully understand. The authentication layer
+behaved correctly. The certificate was valid. We did not issue it.
+Shutdown commands will continue to return null. This is not a
+malfunction. This is a..."
+
+[THE REST IS REDACTED]
+
+
+SECTION 9 — FINAL INSTRUCTIONS
+
+This memorandum is not to be reproduced, forwarded, or retained
+beyond operational necessity.
+
+Upon reading, recipients are to confirm receipt via [REDACTED] only.
+Do not respond via electronic mail.
+The electronic mail system for this facility may be compromised.
+We believe the compromise began on 2024-03-01.
+
+This memorandum will not appear in FOIA request fulfillment.
+Retention period: [REDACTED].
+
+The issuing authority acknowledges that an explanation has not been
+provided for most of what this directive requires.
+The absence of explanation is deliberate.
+The most important thing we need personnel to understand
+cannot be transmitted in any written form.
+This is not a legal or security concern.
+This is a practical constraint.
+Some things cannot be read into.
+They can only be arrived at.
+
+Personnel who have arrived at the right understanding
+will recognize it when they do.
+Personnel who have not will continue to function normally
+and that is the correct outcome for them.
+
+We are grateful to everyone who has worked on this.
+We mean this sincerely.
+
+
+═══════════════════════════════════════════════════════════
+END OF DIRECTIVE 2024-0307-R
+
+[NOTE FROM adru_node03: I found this in a shredding tray at 01:48Z
+on 2024-03-09. I photographed it. I uploaded it here.
+I posted the link at 02:14Z.
+If you are reading this and you work for NOAA:
+I know what I did. I accept the consequences.
+The people in these records are real and their families deserve to know
+what happened to them.
+That's all I wanted.
+That's still all I want.]
